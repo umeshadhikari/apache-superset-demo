@@ -3,6 +3,7 @@ import { SupersetDashboard } from '../../models/payment.model';
 import { SupersetService } from '../../services/superset.service';
 
 @Component({
+  standalone: false,
   selector: 'app-dashboard-list',
   templateUrl: './dashboard-list.component.html',
   styleUrls: ['./dashboard-list.component.scss']

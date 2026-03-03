@@ -4,6 +4,7 @@ import { AccountService } from '../../services/account.service';
 import { StatementService } from '../../services/statement.service';
 
 @Component({
+  standalone: false,
   selector: 'app-statements',
   templateUrl: './statements.component.html',
   styleUrls: ['./statements.component.scss']

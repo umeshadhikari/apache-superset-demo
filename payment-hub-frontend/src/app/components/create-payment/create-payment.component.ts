@@ -6,6 +6,7 @@ import { PaymentService } from '../../services/payment.service';
 import { AccountService } from '../../services/account.service';
 
 @Component({
+  standalone: false,
   selector: 'app-create-payment',
   templateUrl: './create-payment.component.html',
   styleUrls: ['./create-payment.component.scss']

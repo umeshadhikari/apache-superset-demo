@@ -5,6 +5,7 @@ import { PaymentService } from '../../services/payment.service';
 import { FeedbackService } from '../../services/feedback.service';
 
 @Component({
+  standalone: false,
   selector: 'app-payment-detail',
   templateUrl: './payment-detail.component.html',
   styleUrls: ['./payment-detail.component.scss']

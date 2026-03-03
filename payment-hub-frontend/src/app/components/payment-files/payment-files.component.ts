@@ -3,6 +3,7 @@ import { PaymentFile } from '../../models/payment.model';
 import { PaymentFileService } from '../../services/payment-file.service';
 
 @Component({
+  standalone: false,
   selector: 'app-payment-files',
   templateUrl: './payment-files.component.html',
   styleUrls: ['./payment-files.component.scss']

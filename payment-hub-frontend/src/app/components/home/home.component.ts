@@ -4,6 +4,7 @@ import { PaymentService } from '../../services/payment.service';
 import { Router } from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']

@@ -3,6 +3,7 @@ import { SupersetTable, SupersetDashboard, SupersetColumn } from '../../models/p
 import { SupersetService } from '../../services/superset.service';
 
 @Component({
+  standalone: false,
   selector: 'app-dashboard-builder',
   templateUrl: './dashboard-builder.component.html',
   styleUrls: ['./dashboard-builder.component.scss']
