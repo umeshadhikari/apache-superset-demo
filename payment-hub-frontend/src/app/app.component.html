@@ -1,0 +1,59 @@
+<div class="app-shell">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">💳</div>
+      <div class="brand-text">
+        <div class="brand-name">Payment Hub</div>
+        <div class="brand-sub">Demo Platform</div>
+      </div>
+    </div>
+
+    <div class="sidebar-nav">
+      <!-- Home -->
+      <div class="nav-section">
+        <a class="nav-item" routerLink="/" [ngClass]="{'active': isActive('/') && currentRoute === '/'}">
+          <span class="nav-icon">🏠</span>
+          <span>Overview</span>
+        </a>
+      </div>
+
+      <!-- Nav Sections -->
+      <div class="nav-section" *ngFor="let section of navSections">
+        <div class="nav-section-title">{{ section.title }}</div>
+        <a
+          class="nav-item"
+          *ngFor="let item of section.items"
+          [routerLink]="item.path"
+          [ngClass]="{'active': isActive(item.path) && item.path !== '/'}">
+          <span class="nav-icon">{{ item.icon }}</span>
+          <span>{{ item.label }}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="footer-dot"></div>
+      <span>Connected</span>
+      <span class="api-url">localhost:8080</span>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <span class="top-bar-title">{{ getPageTitle() }}</span>
+      </div>
+      <div class="top-bar-right">
+        <a href="http://localhost:8088" target="_blank" class="superset-link">
+          🔴 Apache Superset
+        </a>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,122 @@
+<div class="home-page">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>Payment Hub</h1>
+      <p class="hero-subtitle">Centralized payment processing and analytics platform</p>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <span>Loading dashboard...</span>
+  </div>
+
+  <!-- Stats Cards -->
+  <div *ngIf="!loading && stats" class="stats-grid">
+    <div class="stat-card total">
+      <div class="stat-icon">💳</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.totalPayments | number }}</div>
+        <div class="stat-label">Total Payments</div>
+      </div>
+    </div>
+    <div class="stat-card amount">
+      <div class="stat-icon">💰</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ formatAmount(stats.totalAmount) }}</div>
+        <div class="stat-label">Total Amount</div>
+      </div>
+    </div>
+    <div class="stat-card pending">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.pendingPayments | number }}</div>
+        <div class="stat-label">Pending</div>
+      </div>
+    </div>
+    <div class="stat-card completed">
+      <div class="stat-icon">✅</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.completedPayments | number }}</div>
+        <div class="stat-label">Completed</div>
+      </div>
+    </div>
+    <div class="stat-card failed">
+      <div class="stat-icon">❌</div>
+      <div class="stat-info">
+        <div class="stat-value">{{ stats.failedPayments | number }}</div>
+        <div class="stat-label">Failed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="quick-links-section">
+    <h2>Quick Access</h2>
+    <div class="quick-links-grid">
+      <div class="quick-link-card" (click)="navigateTo('/payment-files')">
+        <div class="ql-icon">📁</div>
+        <h3>Payment Files</h3>
+        <p>Manage bulk payment files and batches</p>
+      </div>
+      <div class="quick-link-card" (click)="navigateTo('/payments')">
+        <div class="ql-icon">💳</div>
+        <h3>Payments</h3>
+        <p>View and manage individual payments</p>
+      </div>
+      <div class="quick-link-card" (click)="navigateTo('/statements')">
+        <div class="ql-icon">📊</div>
+        <h3>Statements</h3>
+        <p>View account statements and transactions</p>
+      </div>
+      <div class="quick-link-card" (click)="navigateTo('/dashboard-builder')">
+        <div class="ql-icon">🛠️</div>
+        <h3>Dashboard Builder</h3>
+        <p>Build custom Superset dashboards</p>
+      </div>
+      <div class="quick-link-card" (click)="navigateTo('/dashboards')">
+        <div class="ql-icon">📈</div>
+        <h3>My Dashboards</h3>
+        <p>View and manage your dashboards</p>
+      </div>
+      <div class="quick-link-card" (click)="navigateTo('/payments/create')">
+        <div class="ql-icon">➕</div>
+        <h3>New Payment</h3>
+        <p>Create a new payment transaction</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Payments -->
+  <div *ngIf="recentPayments.length > 0" class="recent-section card">
+    <div class="card-header">
+      <h2>Recent Payments</h2>
+      <a routerLink="/payments" class="view-all-link">View All →</a>
+    </div>
+    <div class="card-body">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Reference</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of recentPayments" (click)="navigateTo('/payments/' + p.paymentReference)" class="clickable-row">
+            <td class="monospace">{{ p.paymentReference }}</td>
+            <td class="amount-cell">{{ formatAmount(p.amount) }}</td>
+            <td><span class="type-pill">{{ p.paymentType }}</span></td>
+            <td><span class="badge" [ngClass]="getStatusClass(p.status)">{{ p.status }}</span></td>
+            <td class="date-cell">{{ p.createdAt | date:'shortDate' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+# Maven build output
+target/
+*.jar
+*.war
+*.ear
+
+# IntelliJ IDEA — keep .idea/ committed (project setup files)
+# but exclude workspace-local files
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/shelf/
+*.iws
+
+# macOS
+.DS_Store
+
+# Node.js (handled in payment-hub-frontend/.gitignore)
+# Explicitly re-exclude at root level
+payment-hub-frontend/node_modules/
+payment-hub-frontend/dist/
+payment-hub-frontend/.angular/
+
+# Logs
+*.log

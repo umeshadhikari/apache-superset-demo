@@ -1,0 +1,80 @@
+<div class="page-header">
+  <h1 class="page-title"><span class="title-icon">📊</span> Account Statements</h1>
+</div>
+
+<div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+<!-- Filters -->
+<div class="filter-panel card">
+  <div class="card-body">
+    <div class="filter-grid">
+      <div class="form-group">
+        <label class="form-label">Account</label>
+        <select class="form-select" [(ngModel)]="selectedAccountId">
+          <option value="">-- Select Account --</option>
+          <option *ngFor="let acc of accounts" [value]="acc.accountId">
+            {{ acc.accountName }} ({{ acc.accountId }})
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">From Date</label>
+        <input type="date" class="form-control" [(ngModel)]="fromDate" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">To Date</label>
+        <input type="date" class="form-control" [(ngModel)]="toDate" />
+      </div>
+      <div class="form-group align-end">
+        <button class="btn btn-primary" (click)="loadStatements()" [disabled]="!selectedAccountId">
+          Load Statement
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading-container">
+  <div class="spinner"></div>
+  <span>Loading statements...</span>
+</div>
+
+<div *ngIf="!loading && statements.length > 0" class="table-container">
+  <table class="data-table statement-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Value Date</th>
+        <th>Description</th>
+        <th>Reference</th>
+        <th>Type</th>
+        <th>Channel</th>
+        <th class="text-right">Debit</th>
+        <th class="text-right">Credit</th>
+        <th class="text-right">Balance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of statements" [ngClass]="{'debit-row': s.debitAmount, 'credit-row': s.creditAmount}">
+        <td class="date-cell">{{ s.transactionDate | date:'shortDate' }}</td>
+        <td class="date-cell">{{ s.valueDate | date:'shortDate' }}</td>
+        <td>{{ s.description }}</td>
+        <td class="monospace small-text">{{ s.reference }}</td>
+        <td><span class="type-pill small">{{ s.transactionType }}</span></td>
+        <td>{{ s.channel }}</td>
+        <td class="text-right debit-amount">{{ formatAmount(s.debitAmount) }}</td>
+        <td class="text-right credit-amount">{{ formatAmount(s.creditAmount) }}</td>
+        <td class="text-right balance-cell">{{ formatBalance(s.balance) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="!loading && statements.length === 0 && selectedAccountId" class="empty-state">
+  <div class="empty-icon">📊</div>
+  <p>No transactions found for the selected criteria.</p>
+</div>
+
+<div class="table-footer" *ngIf="!loading && statements.length > 0">
+  <span class="record-count">{{ statements.length }} transaction(s)</span>
+</div>

@@ -1,0 +1,68 @@
+<div class="page-header">
+  <h1 class="page-title">
+    <span class="title-icon">💳</span> Payments
+  </h1>
+  <div class="header-actions">
+    <select class="form-select" [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+      <option value="">All Statuses</option>
+      <option *ngFor="let s of statusOptions.slice(1)" [value]="s">{{ s }}</option>
+    </select>
+    <select class="form-select" [(ngModel)]="selectedType" (change)="onFilterChange()">
+      <option value="">All Types</option>
+      <option *ngFor="let t of typeOptions.slice(1)" [value]="t">{{ t }}</option>
+    </select>
+    <a routerLink="/payments/create" class="btn btn-primary">+ New Payment</a>
+    <button class="btn btn-refresh" (click)="loadPayments()">↻ Refresh</button>
+  </div>
+</div>
+
+<div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+<div *ngIf="loading" class="loading-container">
+  <div class="spinner"></div>
+  <span>Loading payments...</span>
+</div>
+
+<div *ngIf="!loading" class="table-container">
+  <table class="data-table" *ngIf="payments.length > 0; else noData">
+    <thead>
+      <tr>
+        <th>Reference</th>
+        <th>Debit Account</th>
+        <th>Credit Account</th>
+        <th>Amount</th>
+        <th>Currency</th>
+        <th>Type</th>
+        <th>Channel</th>
+        <th>Status</th>
+        <th>Value Date</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of payments" (click)="viewDetail(p.paymentReference)" class="clickable-row">
+        <td class="monospace ref-cell">{{ p.paymentReference }}</td>
+        <td class="monospace">{{ p.debitAccountId }}</td>
+        <td class="monospace">{{ p.creditAccountId }}</td>
+        <td class="amount-cell">{{ formatAmount(p.amount, p.currency) }}</td>
+        <td>{{ p.currency }}</td>
+        <td><span class="type-pill">{{ p.paymentType }}</span></td>
+        <td>{{ p.channel }}</td>
+        <td><span class="badge" [ngClass]="getStatusClass(p.status)">{{ p.status }}</span></td>
+        <td class="date-cell">{{ p.valueDate | date:'shortDate' }}</td>
+        <td class="date-cell">{{ p.createdAt | date:'medium' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #noData>
+    <div class="empty-state">
+      <div class="empty-icon">💳</div>
+      <p>No payments found.</p>
+      <a routerLink="/payments/create" class="btn btn-primary">Create First Payment</a>
+    </div>
+  </ng-template>
+</div>
+
+<div class="table-footer" *ngIf="!loading">
+  <span class="record-count">{{ payments.length }} record(s) found</span>
+</div>
