@@ -239,6 +239,26 @@ SupersetDashboard (stores config JSON + Superset dashboard UUID)
 
 ---
 
+## CORS Configuration (Local Development)
+
+When running Angular (`ng serve`) on **http://localhost:4200** and Spring Boot on **http://localhost:8080**, the browser enforces
+[CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) because the two origins differ by port.
+
+### How it is configured
+
+| Layer | File | What it does |
+|-------|------|--------------|
+| Global filter | `payment-hub-backend/src/main/java/com/paymenthub/config/CorsConfig.java` | Registers a `CorsFilter` bean that adds `Access-Control-Allow-Origin: http://localhost:4200` (and a wildcard pattern for other dev origins) to **every** response, including preflight `OPTIONS` requests. |
+| Controller annotation | `@CrossOrigin(origins = "http://localhost:4200")` on every `@RestController` | Spring MVC–level reinforcement so CORS headers are set correctly even if the filter chain is bypassed. |
+
+### What to change for production / other environments
+
+- Replace `http://localhost:4200` with your actual front-end origin (e.g. `https://app.example.com`) in both `CorsConfig.java` and all `@CrossOrigin` annotations.
+- Remove `addAllowedOriginPattern("*")` from `CorsConfig.java` — it is present for demo convenience only.
+- If you add an nginx/reverse-proxy in front of the backend, ensure it forwards (and does not strip) the `Access-Control-*` response headers.
+
+---
+
 ## License
 
 This project is for demonstration purposes only.
