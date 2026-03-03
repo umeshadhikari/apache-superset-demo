@@ -25,8 +25,8 @@ apache-superset-demo/               ← Root (parent Maven POM + IntelliJ projec
 │       │   ├── repository/         (Spring Data JPA repos)
 │       │   └── service/            (business-logic + SupersetApiService)
 │       └── main/resources/
-│           ├── application.properties          (env-var driven; H2 default)
-│           ├── application-postgres.properties (PostgreSQL profile)
+│           ├── application.properties          (PostgreSQL default; env-var overrides)
+│           ├── application-postgres.properties (PostgreSQL profile — additional overrides)
 │           └── data.sql            (seed: 20 accounts · 50 files · 2 000 payments …)
 └── payment-hub-frontend/           ← Angular 19 front-end module (npm)
     ├── Dockerfile
@@ -86,10 +86,10 @@ Superset is now available at **http://localhost:8088** — log in with **admin /
 
 1. In Superset → **Settings → Database Connections → + Database**
 2. Choose **PostgreSQL** and enter:
-   - **Host:** `postgres` (Docker) or `localhost` (native Spring Boot)
+   - **Host:** `localhost`
    - **Port:** `5432`
-   - **Database:** `paymenthub`
-   - **Username / Password:** `paymenthub`
+   - **Database:** `demo_db`
+   - **Username / Password:** `demo_user` / `demo_pass`
 3. Test the connection and save as **"Payment Hub"**.
 4. Go to **Data → Datasets** and add the tables:
    `payments`, `payment_files`, `accounts`, `statements`, `payment_feedback`
@@ -112,21 +112,11 @@ inside the app via the [Superset Embedded SDK](https://superset.apache.org/docs/
 
 ### 6. Start the Spring Boot back-end
 
-**With Docker (PostgreSQL):**
-```bash
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/paymenthub \
-SPRING_DATASOURCE_USERNAME=paymenthub \
-SPRING_DATASOURCE_PASSWORD=paymenthub \
-SPRING_PROFILES_ACTIVE=postgres \
-cd payment-hub-backend && mvn spring-boot:run
-```
-
-**Local H2 (no Docker needed):**
 ```bash
 cd payment-hub-backend && mvn spring-boot:run
 ```
 
-Back-end starts on **http://localhost:8080**.
+Back-end starts on **http://localhost:8080** and connects to PostgreSQL at `localhost:5432/demo_db`.
 
 ### 7. Start the Angular front-end
 
@@ -165,8 +155,7 @@ App is available at **http://localhost:4200**.
 
 **Useful URLs (local dev):**
 - Swagger UI: http://localhost:8080/swagger-ui.html
-- H2 Console (H2 mode only): http://localhost:8080/h2-console
-- Apache Superset: http://localhost:8088
+- Apache Superset: http://localhost:8088 (admin / admin)
 
 ---
 
@@ -207,7 +196,7 @@ App is available at **http://localhost:4200**.
             ▼
 ┌─────────────────────────────────────────────────────────┐
 │  PostgreSQL (:5432)                                     │
-│  Databases: paymenthub (app data), superset (metadata)  │
+│  Databases: demo_db (app data), superset (metadata)     │
 └─────────────────────────────────────────────────────────┘
 ```
 
