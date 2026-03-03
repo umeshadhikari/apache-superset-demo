@@ -91,5 +91,12 @@ export interface SupersetDashboard {
   xAxisColumn?: string;
   yAxisColumn?: string;
   supersetUrl?: string;
+  /** Superset embedded dashboard UUID — used with the Embedded SDK */
+  supersetDashboardId?: string;
   createdAt?: string;
+}
+
+export interface SupersetGuestToken {
+  token: string;
+  supersetDomain: string;
 }

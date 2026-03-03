@@ -21,5 +21,7 @@ public class SupersetDashboardDto {
     private List<String> selectedTables;
     private String xAxisColumn;
     private String yAxisColumn;
+    /** UUID of the corresponding dashboard in Apache Superset (used by the Embedded SDK). */
+    private String supersetDashboardId;
     private LocalDateTime createdAt;
 }

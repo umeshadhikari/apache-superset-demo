@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { SupersetDashboard } from '../../models/payment.model';
 import { SupersetService } from '../../services/superset.service';
 
@@ -14,7 +15,7 @@ export class DashboardListComponent implements OnInit {
   error = '';
   supersetBaseUrl = 'http://localhost:8088';
 
-  constructor(private supersetService: SupersetService) {}
+  constructor(private supersetService: SupersetService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadDashboards();
@@ -44,6 +45,13 @@ export class DashboardListComponent implements OnInit {
         this.error = 'Failed to delete dashboard.';
       }
     });
+  }
+
+  /** Navigate to the embedded Superset dashboard view. */
+  embedDashboard(dashboard: SupersetDashboard): void {
+    if (dashboard.supersetDashboardId) {
+      this.router.navigate(['/superset-embed', dashboard.supersetDashboardId]);
+    }
   }
 
   openInSuperset(dashboard: SupersetDashboard): void {

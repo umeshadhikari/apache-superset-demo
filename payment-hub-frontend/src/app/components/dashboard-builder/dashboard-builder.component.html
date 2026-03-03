@@ -15,6 +15,7 @@
     </div>
   </div>
   <div class="success-actions">
+    <button *ngIf="savedDashboard?.supersetDashboardId" class="btn btn-superset" (click)="viewEmbedded(savedDashboard)">📊 View Embedded</button>
     <button class="btn btn-superset" (click)="openInSuperset(savedDashboard)">🔗 View in Superset</button>
     <button class="btn btn-secondary" (click)="resetForm()">Build Another</button>
   </div>
@@ -68,6 +69,15 @@
       <div class="form-group">
         <label class="form-label">Description</label>
         <textarea class="form-control" [(ngModel)]="dashboard.description" rows="3" placeholder="Dashboard description..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Superset Dashboard UUID
+          <span class="label-hint">(optional — paste the UUID from Superset to enable embedding)</span>
+        </label>
+        <input type="text" class="form-control"
+          [(ngModel)]="dashboard.supersetDashboardId"
+          placeholder="e.g. 7e4b1e3a-2c8f-4d5b-9e10-abc123456789" />
       </div>
 
       <div class="form-group">

@@ -69,6 +69,7 @@ public class SupersetService {
                 .description(dto.getDescription())
                 .config(config)
                 .tables(tables)
+                .supersetDashboardId(dto.getSupersetDashboardId())
                 .build();
         SupersetDashboard saved = dashboardRepository.save(dashboard);
         return toDto(saved);
@@ -122,6 +123,7 @@ public class SupersetService {
                         : List.of())
                 .xAxisColumn(xAxisColumn)
                 .yAxisColumn(yAxisColumn)
+                .supersetDashboardId(d.getSupersetDashboardId())
                 .createdAt(d.getCreatedAt())
                 .build();
     }

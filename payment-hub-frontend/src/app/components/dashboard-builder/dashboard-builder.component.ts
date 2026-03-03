@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { SupersetTable, SupersetDashboard, SupersetColumn } from '../../models/payment.model';
 import { SupersetService } from '../../services/superset.service';
 
@@ -25,10 +26,11 @@ export class DashboardBuilderComponent implements OnInit {
     chartType: 'Tabular',
     selectedTables: [],
     xAxisColumn: '',
-    yAxisColumn: ''
+    yAxisColumn: '',
+    supersetDashboardId: ''
   };
 
-  constructor(private supersetService: SupersetService) {}
+  constructor(private supersetService: SupersetService, private router: Router) {}
 
   ngOnInit(): void {
     this.loading = true;
@@ -103,6 +105,12 @@ export class DashboardBuilderComponent implements OnInit {
     window.open(url, '_blank');
   }
 
+  viewEmbedded(dashboard: SupersetDashboard | null): void {
+    if (dashboard?.supersetDashboardId) {
+      this.router.navigate(['/superset-embed', dashboard.supersetDashboardId]);
+    }
+  }
+
   resetForm(): void {
     this.dashboard = {
       dashboardName: '',
@@ -110,7 +118,8 @@ export class DashboardBuilderComponent implements OnInit {
       chartType: 'Tabular',
       selectedTables: [],
       xAxisColumn: '',
-      yAxisColumn: ''
+      yAxisColumn: '',
+      supersetDashboardId: ''
     };
     this.saveSuccess = false;
     this.savedDashboard = null;

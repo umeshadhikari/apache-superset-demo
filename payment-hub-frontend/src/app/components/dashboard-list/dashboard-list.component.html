@@ -47,6 +47,12 @@
       </div>
     </div>
     <div class="dashboard-card-actions">
+      <button
+        *ngIf="dash.supersetDashboardId"
+        class="btn btn-superset"
+        (click)="embedDashboard(dash)">
+        📊 View Embedded
+      </button>
       <button class="btn btn-superset" (click)="openInSuperset(dash)">
         🔗 Open in Superset
       </button>

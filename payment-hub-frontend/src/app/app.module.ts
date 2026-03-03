@@ -13,6 +13,7 @@ import { CreatePaymentComponent } from './components/create-payment/create-payme
 import { StatementsComponent } from './components/statements/statements.component';
 import { DashboardBuilderComponent } from './components/dashboard-builder/dashboard-builder.component';
 import { DashboardListComponent } from './components/dashboard-list/dashboard-list.component';
+import { SupersetEmbedComponent } from './components/superset-embed/superset-embed.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { DashboardListComponent } from './components/dashboard-list/dashboard-li
     CreatePaymentComponent,
     StatementsComponent,
     DashboardBuilderComponent,
-    DashboardListComponent
+    DashboardListComponent,
+    SupersetEmbedComponent
   ],
   imports: [
     BrowserModule,

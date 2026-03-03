@@ -1,0 +1,24 @@
+<div class="embed-page">
+  <div class="embed-header">
+    <h2 class="embed-title">
+      <span class="title-icon">📊</span> Embedded Superset Dashboard
+    </h2>
+    <a routerLink="/dashboards" class="btn btn-secondary btn-sm">← Back to Dashboards</a>
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <span>Loading dashboard…</span>
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    <strong>Error:</strong> {{ error }}
+    <p class="error-hint">
+      Make sure Apache Superset is running (<code>docker compose up superset</code>),
+      the dashboard UUID is correct, and the backend can reach Superset.
+    </p>
+  </div>
+
+  <!-- The Superset Embedded SDK mounts an iframe inside this container -->
+  <div #embedContainer class="superset-embed-container" [class.hidden]="loading || !!error"></div>
+</div>

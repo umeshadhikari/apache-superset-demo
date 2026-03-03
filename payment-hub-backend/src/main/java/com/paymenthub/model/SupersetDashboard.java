@@ -27,6 +27,9 @@ public class SupersetDashboard {
 
     private String tables; // comma-separated table names
 
+    /** UUID of the corresponding dashboard in Apache Superset (for embedding). */
+    private String supersetDashboardId;
+
     private LocalDateTime createdAt;
 
     @PrePersist
