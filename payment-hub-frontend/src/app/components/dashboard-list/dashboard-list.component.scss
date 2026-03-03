@@ -1,0 +1,22 @@
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.dashboard-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.2s;
+  &:hover { transform: translateY(-2px); }
+}
+.dashboard-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.dashboard-name { font-size: 15px; font-weight: 700; }
+.chart-badge { background: rgba(59,130,246,0.1); color: var(--accent); border: 1px solid rgba(59,130,246,0.2); padding: 2px 8px; border-radius: 4px; font-size: 11px; white-space: nowrap; }
+.dashboard-desc { font-size: 13px; color: var(--text-muted); }
+.dashboard-meta { display: flex; flex-direction: column; gap: 6px; }
+.meta-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; }
+.meta-label { color: var(--text-muted); min-width: 50px; }
+.meta-value { color: var(--text); display: flex; flex-wrap: wrap; gap: 4px; }
+.table-tag { background: var(--border); padding: 1px 6px; border-radius: 4px; font-size: 11px; }
+.dashboard-card-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border); }

@@ -1,0 +1,119 @@
+<div class="page-header">
+  <button class="btn btn-back" (click)="cancel()">← Back to Payments</button>
+  <h1 class="page-title"><span class="title-icon">➕</span> Create Payment</h1>
+</div>
+
+<div *ngIf="success" class="alert alert-success">{{ success }}</div>
+<div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+<div *ngIf="loading" class="loading-container">
+  <div class="spinner"></div>
+  <span>Loading accounts...</span>
+</div>
+
+<div *ngIf="!loading" class="card form-card">
+  <div class="card-header"><h2>Payment Details</h2></div>
+  <div class="card-body">
+    <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label required">Payment Reference</label>
+          <input type="text" class="form-control"
+            formControlName="paymentReference"
+            placeholder="e.g. PAY-2024-001"
+            [ngClass]="{'is-invalid': paymentForm.get('paymentReference')?.invalid && paymentForm.get('paymentReference')?.touched}" />
+          <div class="invalid-feedback" *ngIf="paymentForm.get('paymentReference')?.errors?.['required'] && paymentForm.get('paymentReference')?.touched">
+            Payment reference is required.
+          </div>
+          <div class="invalid-feedback" *ngIf="paymentForm.get('paymentReference')?.errors?.['minlength'] && paymentForm.get('paymentReference')?.touched">
+            Minimum 6 characters required.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">Amount</label>
+          <input type="number" class="form-control"
+            formControlName="amount"
+            placeholder="0.00"
+            step="0.01"
+            [ngClass]="{'is-invalid': paymentForm.get('amount')?.invalid && paymentForm.get('amount')?.touched}" />
+          <div class="invalid-feedback" *ngIf="paymentForm.get('amount')?.errors?.['required'] && paymentForm.get('amount')?.touched">
+            Amount is required.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">Debit Account</label>
+          <select class="form-select" formControlName="debitAccountId"
+            [ngClass]="{'is-invalid': paymentForm.get('debitAccountId')?.invalid && paymentForm.get('debitAccountId')?.touched}">
+            <option value="">-- Select Debit Account --</option>
+            <option *ngFor="let acc of accounts" [value]="acc.accountId">
+              {{ acc.accountName }} ({{ acc.accountId }})
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="paymentForm.get('debitAccountId')?.errors?.['required'] && paymentForm.get('debitAccountId')?.touched">
+            Debit account is required.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">Credit Account</label>
+          <select class="form-select" formControlName="creditAccountId"
+            [ngClass]="{'is-invalid': paymentForm.get('creditAccountId')?.invalid && paymentForm.get('creditAccountId')?.touched}">
+            <option value="">-- Select Credit Account --</option>
+            <option *ngFor="let acc of accounts" [value]="acc.accountId">
+              {{ acc.accountName }} ({{ acc.accountId }})
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="paymentForm.get('creditAccountId')?.errors?.['required'] && paymentForm.get('creditAccountId')?.touched">
+            Credit account is required.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">Currency</label>
+          <select class="form-select" formControlName="currency">
+            <option *ngFor="let c of currencies" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">Payment Type</label>
+          <select class="form-select" formControlName="paymentType">
+            <option *ngFor="let t of paymentTypes" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">Channel</label>
+          <select class="form-select" formControlName="channel">
+            <option *ngFor="let ch of channels" [value]="ch">{{ ch }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">Value Date</label>
+          <input type="date" class="form-control"
+            formControlName="valueDate"
+            [ngClass]="{'is-invalid': paymentForm.get('valueDate')?.invalid && paymentForm.get('valueDate')?.touched}" />
+          <div class="invalid-feedback" *ngIf="paymentForm.get('valueDate')?.errors?.['required'] && paymentForm.get('valueDate')?.touched">
+            Value date is required.
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" formControlName="description" rows="3" placeholder="Optional payment description..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary btn-lg" [disabled]="paymentForm.invalid || submitting">
+          <span *ngIf="submitting">⏳ Creating...</span>
+          <span *ngIf="!submitting">💳 Create Payment</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

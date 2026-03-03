@@ -1,0 +1,109 @@
+<div class="detail-header">
+  <button class="btn btn-back" (click)="goBack()">← Back to Payments</button>
+  <h1 class="page-title"><span class="title-icon">🔍</span> Payment Detail</h1>
+</div>
+
+<div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+<div *ngIf="loading" class="loading-container">
+  <div class="spinner"></div>
+  <span>Loading payment details...</span>
+</div>
+
+<div *ngIf="!loading && payment" class="detail-layout">
+  <!-- Payment Info Card -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Payment Information</h2>
+      <span class="badge" [ngClass]="getStatusClass(payment.status)">{{ payment.status }}</span>
+    </div>
+    <div class="card-body">
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>Reference</label>
+          <span class="monospace">{{ payment.paymentReference }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Amount</label>
+          <span class="amount-large">{{ formatAmount(payment.amount, payment.currency) }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Currency</label>
+          <span>{{ payment.currency }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Payment Type</label>
+          <span class="type-pill">{{ payment.paymentType }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Channel</label>
+          <span>{{ payment.channel }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Value Date</label>
+          <span>{{ payment.valueDate | date:'mediumDate' }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Debit Account</label>
+          <span class="monospace">{{ payment.debitAccountId }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Credit Account</label>
+          <span class="monospace">{{ payment.creditAccountId }}</span>
+        </div>
+        <div class="detail-item full-width" *ngIf="payment.description">
+          <label>Description</label>
+          <span>{{ payment.description }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Created At</label>
+          <span>{{ payment.createdAt | date:'medium' }}</span>
+        </div>
+        <div class="detail-item" *ngIf="payment.updatedAt">
+          <label>Updated At</label>
+          <span>{{ payment.updatedAt | date:'medium' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Status Card -->
+  <div class="card">
+    <div class="card-header"><h2>Update Status</h2></div>
+    <div class="card-body">
+      <div *ngIf="updateSuccess" class="alert alert-success">{{ updateSuccess }}</div>
+      <div *ngIf="updateError" class="alert alert-error">{{ updateError }}</div>
+      <div class="status-update-form">
+        <select class="form-select" [(ngModel)]="newStatus">
+          <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+        </select>
+        <button class="btn btn-primary" (click)="updateStatus()" [disabled]="newStatus === payment.status">
+          Update Status
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback Card -->
+  <div class="card">
+    <div class="card-header"><h2>Payment Feedback</h2></div>
+    <div class="card-body">
+      <div *ngIf="feedbackLoading" class="loading-container">
+        <div class="spinner"></div>
+      </div>
+      <div *ngIf="!feedbackLoading && feedbacks.length === 0" class="empty-state small">
+        <p>No feedback records found.</p>
+      </div>
+      <div *ngIf="!feedbackLoading && feedbacks.length > 0">
+        <div class="feedback-item" *ngFor="let fb of feedbacks">
+          <div class="feedback-header">
+            <span class="badge" [ngClass]="getStatusClass(fb.status)">{{ fb.status }}</span>
+            <span class="feedback-date">{{ fb.createdAt | date:'medium' }}</span>
+          </div>
+          <p class="feedback-message">{{ fb.message }}</p>
+          <span class="error-code" *ngIf="fb.errorCode">Code: {{ fb.errorCode }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

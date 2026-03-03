@@ -1,0 +1,134 @@
+<div class="page-header">
+  <h1 class="page-title"><span class="title-icon">🛠️</span> Dashboard Builder</h1>
+  <p class="page-subtitle">Build and publish Superset dashboards from payment data</p>
+</div>
+
+<div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+<!-- Success state -->
+<div *ngIf="saveSuccess && savedDashboard" class="alert alert-success success-card">
+  <div class="success-content">
+    <span class="success-icon">✅</span>
+    <div>
+      <strong>Dashboard "{{ savedDashboard.dashboardName }}" created successfully!</strong>
+      <p>Your dashboard has been saved and published to Apache Superset.</p>
+    </div>
+  </div>
+  <div class="success-actions">
+    <button class="btn btn-superset" (click)="openInSuperset(savedDashboard)">🔗 View in Superset</button>
+    <button class="btn btn-secondary" (click)="resetForm()">Build Another</button>
+  </div>
+</div>
+
+<div *ngIf="!saveSuccess" class="builder-layout">
+  <!-- Left Panel: Tables -->
+  <div class="panel left-panel card">
+    <div class="card-header"><h2>Available Tables</h2></div>
+    <div class="card-body">
+      <div *ngIf="loading" class="loading-container">
+        <div class="spinner"></div>
+      </div>
+      <div *ngIf="!loading">
+        <div
+          class="table-item"
+          *ngFor="let table of tables"
+          (click)="selectTable(table)"
+          [ngClass]="{'selected': selectedTable?.tableName === table.tableName}">
+          <div class="table-item-header">
+            <span class="table-icon">🗃️</span>
+            <span class="table-name">{{ table.tableName }}</span>
+            <span class="column-count">{{ table.columns.length }} cols</span>
+          </div>
+          <p class="table-desc" *ngIf="table.description">{{ table.description }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected Table Columns -->
+    <div *ngIf="selectedTable" class="card-section">
+      <div class="card-header"><h3>Columns: {{ selectedTable.tableName }}</h3></div>
+      <div class="card-body columns-list">
+        <div class="column-item" *ngFor="let col of selectedTable.columns">
+          <span class="col-name">{{ col.columnName }}</span>
+          <span class="col-type">{{ col.dataType }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel: Config Form -->
+  <div class="panel right-panel card">
+    <div class="card-header"><h2>Dashboard Configuration</h2></div>
+    <div class="card-body">
+      <div class="form-group">
+        <label class="form-label required">Dashboard Name</label>
+        <input type="text" class="form-control" [(ngModel)]="dashboard.dashboardName" placeholder="My Dashboard" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" [(ngModel)]="dashboard.description" rows="3" placeholder="Dashboard description..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label required">Chart Type</label>
+        <div class="chart-type-grid">
+          <div
+            class="chart-type-option"
+            *ngFor="let ct of chartTypes"
+            (click)="dashboard.chartType = ct"
+            [ngClass]="{'selected': dashboard.chartType === ct}">
+            <span class="chart-icon">{{ ct === 'Tabular' ? '📋' : ct === 'Bar Chart' ? '📊' : ct === 'Pie Chart' ? '🥧' : ct === 'Line Chart' ? '📈' : '🔵' }}</span>
+            <span>{{ ct }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label required">Selected Tables</label>
+        <div class="tables-checklist">
+          <div class="check-item" *ngFor="let table of tables">
+            <label class="checkbox-label">
+              <input type="checkbox"
+                [checked]="isTableSelected(table.tableName)"
+                (change)="toggleTable(table.tableName)" />
+              <span>{{ table.tableName }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row" *ngIf="dashboard.chartType !== 'Tabular'">
+        <div class="form-group half">
+          <label class="form-label">X-Axis Column</label>
+          <select class="form-select" [(ngModel)]="dashboard.xAxisColumn">
+            <option value="">-- Select --</option>
+            <option *ngFor="let col of getAvailableColumns()" [value]="col.columnName">{{ col.columnName }}</option>
+          </select>
+        </div>
+        <div class="form-group half">
+          <label class="form-label">Y-Axis Column</label>
+          <select class="form-select" [(ngModel)]="dashboard.yAxisColumn">
+            <option value="">-- Select --</option>
+            <option *ngFor="let col of getAvailableColumns()" [value]="col.columnName">{{ col.columnName }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div class="preview-section">
+        <label class="form-label">Preview</label>
+        <div class="preview-box">
+          <pre>{{ getPreviewText() }}</pre>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary btn-lg" (click)="saveDashboard()" [disabled]="saving">
+          <span *ngIf="saving">⏳ Saving...</span>
+          <span *ngIf="!saving">💾 Save & Publish Dashboard</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
