@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/apache-superset-demo.iml" filepath="$PROJECT_DIR$/apache-superset-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/payment-hub-backend/payment-hub-backend.iml" filepath="$PROJECT_DIR$/payment-hub-backend/payment-hub-backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/payment-hub-frontend/payment-hub-frontend.iml" filepath="$PROJECT_DIR$/payment-hub-frontend/payment-hub-frontend.iml" />
+    </modules>
+  </component>
+</project>
