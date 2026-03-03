@@ -19,6 +19,19 @@
     </p>
   </div>
 
-  <!-- The Superset Embedded SDK mounts an iframe inside this container -->
-  <div #embedContainer class="superset-embed-container" [class.hidden]="loading || !!error"></div>
+  <!-- UUID mode: Superset Embedded SDK mounts an iframe inside this container -->
+  <div
+    *ngIf="isUuidMode"
+    #embedContainer
+    class="superset-embed-container"
+    [class.hidden]="loading || !!error">
+  </div>
+
+  <!-- Direct iframe mode: used when dashboardId is a numeric Superset ID -->
+  <iframe
+    *ngIf="!isUuidMode && iframeSrc"
+    [src]="iframeSrc"
+    class="superset-iframe"
+    allowfullscreen>
+  </iframe>
 </div>

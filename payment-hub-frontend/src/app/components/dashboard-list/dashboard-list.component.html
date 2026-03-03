@@ -51,9 +51,12 @@
         *ngIf="dash.supersetDashboardId"
         class="btn btn-superset"
         (click)="embedDashboard(dash)">
-        📊 View Embedded
+        📊 View Dashboard
       </button>
-      <button class="btn btn-superset" (click)="openInSuperset(dash)">
+      <span *ngIf="!dash.supersetDashboardId" class="no-uuid-hint">
+        No Superset UUID — <a routerLink="/dashboard-builder">configure embedding</a>
+      </span>
+      <button class="btn btn-secondary btn-sm" (click)="openInSuperset(dash)">
         🔗 Open in Superset
       </button>
       <button class="btn btn-danger btn-sm" (click)="deleteDashboard(dash.id)">🗑️ Delete</button>
