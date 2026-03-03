@@ -15,9 +15,11 @@ import java.util.List;
 public class SupersetDashboardDto {
 
     private Long id;
-    private String name;
+    private String dashboardName;
     private String description;
-    private String config;
-    private List<String> tables;
+    private String chartType;
+    private List<String> selectedTables;
+    private String xAxisColumn;
+    private String yAxisColumn;
     private LocalDateTime createdAt;
 }
