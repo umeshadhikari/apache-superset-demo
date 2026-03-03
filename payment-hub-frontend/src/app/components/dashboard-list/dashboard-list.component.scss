@@ -19,4 +19,5 @@
 .meta-label { color: var(--text-muted); min-width: 50px; }
 .meta-value { color: var(--text); display: flex; flex-wrap: wrap; gap: 4px; }
 .table-tag { background: var(--border); padding: 1px 6px; border-radius: 4px; font-size: 11px; }
-.dashboard-card-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border); }
+.dashboard-card-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
+.no-uuid-hint { font-size: 11px; color: var(--text-muted); flex: 1; a { color: var(--accent); text-decoration: underline; cursor: pointer; } }

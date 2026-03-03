@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SupersetDashboard } from '../../models/payment.model';
 import { SupersetService } from '../../services/superset.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   standalone: false,
@@ -13,7 +14,7 @@ export class DashboardListComponent implements OnInit {
   dashboards: SupersetDashboard[] = [];
   loading = false;
   error = '';
-  supersetBaseUrl = 'http://localhost:8088';
+  supersetBaseUrl = environment.superset.baseUrl;
 
   constructor(private supersetService: SupersetService, private router: Router) {}
 
@@ -55,7 +56,10 @@ export class DashboardListComponent implements OnInit {
   }
 
   openInSuperset(dashboard: SupersetDashboard): void {
-    const url = dashboard.supersetUrl || this.supersetBaseUrl;
+    const id = dashboard.supersetDashboardId;
+    const url = id
+      ? `${this.supersetBaseUrl}/superset/dashboard/${id}/`
+      : `${this.supersetBaseUrl}/dashboard/list/`;
     window.open(url, '_blank');
   }
 }

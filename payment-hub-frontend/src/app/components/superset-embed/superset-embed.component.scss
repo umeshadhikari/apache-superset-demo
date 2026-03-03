@@ -42,6 +42,15 @@
   border: none;
 }
 
+/* Direct iframe fallback (numeric Superset ID) */
+.superset-iframe {
+  flex: 1;
+  width: 100%;
+  min-height: 600px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+}
+
 .loading-container {
   display: flex;
   align-items: center;
