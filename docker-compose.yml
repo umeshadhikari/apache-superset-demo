@@ -1,0 +1,109 @@
+version: "3.8"
+
+services:
+  # ── PostgreSQL ────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:15
+    container_name: paymenthub-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: paymenthub
+      POSTGRES_USER: paymenthub
+      POSTGRES_PASSWORD: paymenthub
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U paymenthub -d paymenthub"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Apache Superset ───────────────────────────────────────────────────────
+  superset:
+    image: apache/superset:3.1.3
+    container_name: paymenthub-superset
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SUPERSET_SECRET_KEY: "superset-secret-key-change-in-production"
+      SUPERSET_WEBSERVER_PORT: 8088
+      # Store Superset metadata in PostgreSQL
+      DATABASE_DB: superset
+      DATABASE_HOST: postgres
+      DATABASE_PASSWORD: paymenthub
+      DATABASE_USER: paymenthub
+      DATABASE_PORT: 5432
+      DATABASE_DIALECT: postgresql
+      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://paymenthub:paymenthub@postgres:5432/superset"
+      # Allow embedding dashboards
+      FEATURE_FLAGS: '{"EMBEDDED_SUPERSET": true}'
+      TALISMAN_ENABLED: "False"
+      WTF_CSRF_ENABLED: "False"
+    ports:
+      - "8088:8088"
+    volumes:
+      - superset-data:/app/superset_home
+      - ./superset/superset_config.py:/app/pythonpath/superset_config.py:ro
+    command: >
+      sh -c "
+        pip install psycopg2-binary &&
+        superset db upgrade &&
+        superset fab create-admin
+          --username admin
+          --firstname Admin
+          --lastname User
+          --email admin@paymenthub.local
+          --password admin || true &&
+        superset init &&
+        /usr/bin/run-server.sh
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  # ── Spring Boot Back-end ──────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./payment-hub-backend
+      dockerfile: Dockerfile
+    container_name: paymenthub-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/paymenthub
+      SPRING_DATASOURCE_USERNAME: paymenthub
+      SPRING_DATASOURCE_PASSWORD: paymenthub
+      SUPERSET_URL: http://superset:8088
+      SUPERSET_ADMIN_USERNAME: admin
+      SUPERSET_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    profiles:
+      - full
+
+  # ── Angular Front-end ─────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./payment-hub-frontend
+      dockerfile: Dockerfile
+    container_name: paymenthub-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
+    profiles:
+      - full
+
+volumes:
+  postgres-data:
+  superset-data:

@@ -8,6 +8,7 @@ import { CreatePaymentComponent } from './components/create-payment/create-payme
 import { StatementsComponent } from './components/statements/statements.component';
 import { DashboardBuilderComponent } from './components/dashboard-builder/dashboard-builder.component';
 import { DashboardListComponent } from './components/dashboard-list/dashboard-list.component';
+import { SupersetEmbedComponent } from './components/superset-embed/superset-embed.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'statements', component: StatementsComponent },
   { path: 'dashboard-builder', component: DashboardBuilderComponent },
   { path: 'dashboards', component: DashboardListComponent },
+  { path: 'superset-embed/:dashboardId', component: SupersetEmbedComponent },
   { path: '**', redirectTo: '' }
 ];
 

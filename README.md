@@ -1,60 +1,69 @@
 # Apache Superset Demo — Payment Hub
 
-A multi-module IntelliJ project demonstrating the custom dashboard capabilities of
-[Apache Superset](https://superset.apache.org/) using a **Payment Hub** domain.
+A multi-module IntelliJ project demonstrating **real embedded Apache Superset dashboards** in an
+Angular + Spring Boot **Payment Hub** application, backed by **PostgreSQL**.
 
 ## Project Structure
 
 ```
 apache-superset-demo/               ← Root (parent Maven POM + IntelliJ project)
-├── .idea/                          ← IntelliJ project files (modules.xml, misc.xml, vcs.xml)
+├── docker-compose.yml              ← One-command local dev stack
+├── superset/
+│   └── superset_config.py          ← Superset config (embedding, CORS, RLS)
 ├── payment-hub-backend/            ← Spring Boot 3 back-end module (Maven)
+│   ├── Dockerfile
 │   ├── pom.xml
 │   └── src/
 │       ├── main/java/com/paymenthub/
 │       │   ├── PaymentHubApplication.java
-│       │   ├── config/             (CorsConfig, DataInitializer)
-│       │   ├── controller/         (Payment, PaymentFile, Account, Statement, Feedback, Superset)
-│       │   ├── dto/                (request/response DTOs)
-│       │   ├── model/              (Account, Payment, PaymentFile, PaymentFeedback, Statement, SupersetDashboard)
+│       │   ├── config/             (CorsConfig, AppConfig, DataInitializer)
+│       │   ├── controller/         (Payment, PaymentFile, Account, Statement,
+│       │   │                        Feedback, Superset — incl. guest-token endpoint)
+│       │   ├── dto/                (request/response DTOs + SupersetGuestToken*)
+│       │   ├── model/              (Account, Payment, PaymentFile, PaymentFeedback,
+│       │   │                        Statement, SupersetDashboard)
 │       │   ├── repository/         (Spring Data JPA repos)
-│       │   └── service/            (business-logic services)
+│       │   └── service/            (business-logic + SupersetApiService)
 │       └── main/resources/
-│           ├── application.properties
-│           └── data.sql            (20 accounts · 50 files · 2 000 payments · ~1 400 feedbacks · 600 statements)
-└── payment-hub-frontend/           ← Angular 17 front-end module (npm)
+│           ├── application.properties          (env-var driven; H2 default)
+│           ├── application-postgres.properties (PostgreSQL profile)
+│           └── data.sql            (seed: 20 accounts · 50 files · 2 000 payments …)
+└── payment-hub-frontend/           ← Angular 19 front-end module (npm)
+    ├── Dockerfile
+    ├── nginx.conf
     ├── package.json
     └── src/app/
         ├── components/
-        │   ├── home/               (stats cards + recent payments)
-        │   ├── payment-files/      (payment-file listing with status filter)
-        │   ├── payments/           (payment listing with filters)
-        │   ├── payment-detail/     (full detail + feedback + status update)
-        │   ├── create-payment/     (reactive form)
-        │   ├── statements/         (account + date-range filter)
-        │   ├── dashboard-builder/  (Superset dashboard construction UI)
-        │   └── dashboard-list/     (saved dashboard cards)
+        │   ├── home/
+        │   ├── payment-files/
+        │   ├── payments/
+        │   ├── payment-detail/
+        │   ├── create-payment/
+        │   ├── statements/
+        │   ├── dashboard-builder/  (build + link a Superset dashboard by UUID)
+        │   ├── dashboard-list/     (list saved dashboards; embed or open in Superset)
+        │   └── superset-embed/     ← NEW — full embedded dashboard via Embedded SDK
         ├── models/
         │   └── payment.model.ts
-        └── services/               (PaymentService, AccountService, SupersetService, …)
+        └── services/
+            └── superset.service.ts (includes getGuestToken())
 ```
 
 ---
 
 ## Prerequisites
 
-| Tool | Minimum Version | Notes |
-|------|----------------|-------|
-| Java (JDK) | 17 | Required for Spring Boot |
-| Maven | 3.8+ | Or use the included Maven wrapper |
-| Node.js | 18+ | Required for Angular |
+| Tool | Min Version | Notes |
+|------|-------------|-------|
+| Docker + Docker Compose | 24+ | Required for PostgreSQL and Superset |
+| Java (JDK) | 17 | Required for Spring Boot (local dev only) |
+| Maven | 3.8+ | Or use `./mvnw` |
+| Node.js | 18+ | Required for Angular (local dev only) |
 | npm | 9+ | Bundled with Node.js |
-| Angular CLI | 17 | `npm install -g @angular/cli@17` |
-| Apache Superset | 3.x | Optional — only needed for live dashboard embedding |
 
 ---
 
-## Quickstart
+## Quickstart (Docker — recommended)
 
 ### 1. Clone the repository
 
@@ -63,52 +72,63 @@ git clone https://github.com/umeshadhikari/apache-superset-demo.git
 cd apache-superset-demo
 ```
 
-### 2. Open in IntelliJ IDEA
-
-1. **File → Open** and select the repository root directory.  
-   IntelliJ detects the parent `pom.xml` and imports both Maven and Angular modules automatically.
-2. Set the Project SDK to **Java 17** (**File → Project Structure → Project**).
-3. For the Angular module, IntelliJ will detect `package.json` and enable Node.js support
-   (install the **Angular and AngularJS** plugin if prompted).
-
----
-
-## Running the Back-end (Spring Boot)
+### 2. Start PostgreSQL and Superset
 
 ```bash
-cd payment-hub-backend
-mvn spring-boot:run
+docker compose up postgres superset
 ```
 
-Or in IntelliJ: right-click `PaymentHubApplication` → **Run**.
+Wait until you see `Superset is up and running` in the logs (may take ~60 seconds on first run).
 
-The back-end starts on **http://localhost:8080**.
+Superset is now available at **http://localhost:8088** — log in with **admin / admin**.
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET  /api/payments` | List all payments |
-| `POST /api/payments` | Create a new payment |
-| `GET  /api/payments/{reference}` | Get payment by reference |
-| `PUT  /api/payments/{reference}/status` | Update payment status |
-| `GET  /api/payments/stats` | Aggregated dashboard statistics |
-| `GET  /api/payment-files` | List all payment files |
-| `GET  /api/accounts` | List all accounts |
-| `GET  /api/statements/{accountId}` | Get statements for an account |
-| `GET  /api/feedback/{paymentReference}` | Get feedback for a payment |
-| `GET  /api/superset/tables` | List DB tables with columns (for dashboard builder) |
-| `GET  /api/superset/dashboards` | List saved dashboards |
-| `POST /api/superset/dashboards` | Save a new dashboard configuration |
+### 3. Connect Superset to the Payment Hub database
 
-**Useful URLs:**
+1. In Superset → **Settings → Database Connections → + Database**
+2. Choose **PostgreSQL** and enter:
+   - **Host:** `postgres` (Docker) or `localhost` (native Spring Boot)
+   - **Port:** `5432`
+   - **Database:** `paymenthub`
+   - **Username / Password:** `paymenthub`
+3. Test the connection and save as **"Payment Hub"**.
+4. Go to **Data → Datasets** and add the tables:
+   `payments`, `payment_files`, `accounts`, `statements`, `payment_feedback`
 
-- Swagger UI: http://localhost:8080/swagger-ui.html  
-- H2 Console: http://localhost:8080/h2-console  
-  - JDBC URL: `jdbc:h2:mem:paymenthub`  
-  - Username: `sa` · Password: *(empty)*
+### 4. Enable dashboard embedding
 
----
+1. In Superset → **Dashboards** → open or create a dashboard.
+2. Click **⋮ → Embed dashboard**.
+3. Copy the **UUID** shown in the embed dialog.
 
-## Running the Front-end (Angular)
+### 5. Link the UUID in the Angular app
+
+When saving a dashboard in the **Dashboard Builder** (`/dashboard-builder`):
+- Paste the Superset UUID into the **"Superset Dashboard UUID"** field.
+- Click **Save & Publish**.
+
+The **My Dashboards** page (`/dashboards`) now shows a **📊 View Embedded** button.
+Clicking it navigates to `/superset-embed/<uuid>` where the dashboard is rendered
+inside the app via the [Superset Embedded SDK](https://superset.apache.org/docs/embedded-superset/).
+
+### 6. Start the Spring Boot back-end
+
+**With Docker (PostgreSQL):**
+```bash
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/paymenthub \
+SPRING_DATASOURCE_USERNAME=paymenthub \
+SPRING_DATASOURCE_PASSWORD=paymenthub \
+SPRING_PROFILES_ACTIVE=postgres \
+cd payment-hub-backend && mvn spring-boot:run
+```
+
+**Local H2 (no Docker needed):**
+```bash
+cd payment-hub-backend && mvn spring-boot:run
+```
+
+Back-end starts on **http://localhost:8080**.
+
+### 7. Start the Angular front-end
 
 ```bash
 cd payment-hub-frontend
@@ -116,117 +136,117 @@ npm install          # first time only
 ng serve
 ```
 
-The app is available at **http://localhost:4200**.
+App is available at **http://localhost:4200**.
 
-In IntelliJ, create a **npm run configuration** (`ng serve`) or use the built-in terminal.
+---
 
-### Pages
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/payments` | List all payments |
+| POST | `/api/payments` | Create a new payment |
+| GET | `/api/payments/{reference}` | Get payment by reference |
+| PUT | `/api/payments/{reference}/status` | Update payment status |
+| GET | `/api/payments/stats` | Aggregated dashboard statistics |
+| GET | `/api/payment-files` | List all payment files |
+| GET | `/api/accounts` | List all accounts |
+| GET | `/api/statements/{accountId}` | Get statements for an account |
+| GET | `/api/feedback/{paymentReference}` | Get feedback for a payment |
+| GET | `/api/superset/tables` | List DB tables with columns |
+| GET | `/api/superset/dashboards` | List saved dashboards |
+| POST | `/api/superset/dashboards` | Save a new dashboard configuration |
+| DELETE | `/api/superset/dashboards/{id}` | Delete a dashboard |
+| **GET** | **`/api/superset/guest-token`** | **Generate Superset guest token for embedding** |
+
+**Guest token parameters:**
+- `dashboardId` — Superset embedded dashboard UUID (required)
+- `username` — end-user identifier for audit / RLS (optional, default: `guest`)
+
+**Useful URLs (local dev):**
+- Swagger UI: http://localhost:8080/swagger-ui.html
+- H2 Console (H2 mode only): http://localhost:8080/h2-console
+- Apache Superset: http://localhost:8088
+
+---
+
+## Frontend Routes
 
 | Route | Page |
 |-------|------|
-| `/` | Home — stats overview + quick links |
+| `/` | Home — stats overview |
 | `/payment-files` | Payment File listing |
 | `/payments` | Payment listing with filters |
 | `/payments/:reference` | Payment detail + feedback |
 | `/payments/create` | Create payment form |
 | `/statements` | Statement viewer |
-| `/dashboard-builder` | Apache Superset Dashboard Builder |
+| `/dashboard-builder` | Build & link a Superset dashboard |
 | `/dashboards` | Saved Dashboard listing |
+| `/superset-embed/:dashboardId` | **Embedded Superset dashboard (new)** |
 
 ---
 
-## Apache Superset Integration
+## Architecture
 
-The **Dashboard Builder** page (`/dashboard-builder`) allows you to:
-
-1. Browse all available database tables and their columns via the back-end API.
-2. Select tables, chart type (Tabular / Bar / Pie / Line / Scatter), X-axis and Y-axis columns.
-3. Save the dashboard configuration — it is persisted in the back-end database.
-4. Open saved dashboards directly in Apache Superset via the **Saved Dashboards** page.
-
-### Running Apache Superset (Docker)
-
-```bash
-# Pull and start Superset
-docker run -d -p 8088:8088 \
-  -e "SUPERSET_SECRET_KEY=your-secret-key" \
-  --name superset apache/superset:latest
-
-# Initialize Superset
-docker exec -it superset superset fab create-admin \
-  --username admin --firstname Admin --lastname User \
-  --email admin@example.com --password admin
-
-docker exec -it superset superset db upgrade
-docker exec -it superset superset init
+```
+┌─────────────────────────────────────────────────────────┐
+│  Browser (Angular 19)                                   │
+│  ┌──────────────────┐   ┌────────────────────────────┐  │
+│  │  Angular App     │   │  Superset Embedded SDK     │  │
+│  │  /superset-embed │──▶│  <iframe src=Superset>     │  │
+│  └────────┬─────────┘   └────────────────────────────┘  │
+│           │  GET /api/superset/guest-token               │
+└───────────┼─────────────────────────────────────────────┘
+            ▼
+┌─────────────────────────────────────────────────────────┐
+│  Spring Boot Backend (:8080)                            │
+│  SupersetApiService                                     │
+│    POST /api/v1/security/login   ─────▶  Superset       │
+│    POST /api/v1/security/guest_token/ ─▶ (:8088)        │
+└─────────────────────────────────────────────────────────┘
+            ▼
+┌─────────────────────────────────────────────────────────┐
+│  PostgreSQL (:5432)                                     │
+│  Databases: paymenthub (app data), superset (metadata)  │
+└─────────────────────────────────────────────────────────┘
 ```
 
-Superset is available at **http://localhost:8088** (admin / admin).
+---
 
-**Connecting Superset to the Payment Hub database:**
+## Row-Level Security (RLS)
 
-1. In Superset → **Data → Databases → + Database**
-2. Select **SQLite** (for H2 file-mode) or use the JDBC connection if you switch to PostgreSQL.
-3. Alternatively, connect directly to the H2 TCP server by adding:
-   ```
-   jdbc:h2:tcp://localhost/mem:paymenthub
-   ```
-4. Add the `PAYMENTS`, `PAYMENT_FILES`, `ACCOUNTS`, `STATEMENTS`, and `PAYMENT_FEEDBACK`
-   tables as Superset datasets.
-5. Build charts: bar chart by payment status, pie chart by currency,
-   line chart of daily payment volumes, tabular view of recent payments.
+The guest-token endpoint accepts an optional `username` parameter which is forwarded
+to Superset for audit purposes. To enforce per-tenant data isolation:
+
+1. In Superset → **Security → Row Level Security**, create a rule:
+   - **Table:** `payments`
+   - **Clause:** `debit_account_id = '{{ current_username() }}'`
+2. Assign the rule to the **Gamma** role (used for guest tokens).
 
 ---
 
-## Sample Data Overview
-
-The back-end auto-loads sample data on startup (`data.sql`):
+## Sample Data
 
 | Entity | Records |
 |--------|---------|
-| Accounts | 20 (SAVINGS / CHECKING / CORPORATE, multi-currency: USD, EUR, GBP, KES) |
+| Accounts | 20 (SAVINGS / CHECKING / CORPORATE, multi-currency) |
 | Payment Files | 50 (BULK / SINGLE / BATCH, all statuses) |
-| Payments | 2 000 (spread across 12 months, all payment types, channels and statuses) |
-| Payment Feedbacks | ~1 400 (for completed / failed payments) |
-| Statements | ~600 (linked to accounts and payments) |
+| Payments | 2 000 (spread across 12 months) |
+| Payment Feedbacks | ~1 400 |
+| Statements | ~600 |
 
 ---
 
 ## Data Model
 
 ```
-Account ──< Payment (as debit or credit account)
+Account ──< Payment (debit / credit)
 Account ──< Statement
 PaymentFile ──< Payment
 Payment ──< PaymentFeedback
 Payment ──< Statement
-SupersetDashboard (stores saved dashboard configuration as JSON)
+SupersetDashboard (stores config JSON + Superset dashboard UUID)
 ```
-
----
-
-## Dashboard Examples
-
-The pre-loaded dataset supports the following Superset visualisations out of the box:
-
-- **Tabular** — Full payment listing with filters
-- **Bar Chart** — Payment count / volume by status, type, or channel
-- **Pie Chart** — Payment distribution by currency or payment type
-- **Line Chart** — Daily payment volume over the past 12 months
-- **Scatter Plot** — Payment amount vs. processing time
-- **Big Number** — Total payments, total value, pending count
-
----
-
-## Development Tips
-
-- The back-end uses an **in-memory H2 database** — data resets on every restart.  
-  To persist data, change `spring.datasource.url` in `application.properties` to a
-  file-based H2 URL or swap to PostgreSQL/MySQL.
-- CORS is fully open for demo purposes. Restrict `allowedOriginPattern` in
-  `CorsConfig.java` before any production use.
-- The Angular `environment.ts` sets `apiUrl: 'http://localhost:8080'`. Update this
-  if you deploy the back-end to a different host/port.
 
 ---
 

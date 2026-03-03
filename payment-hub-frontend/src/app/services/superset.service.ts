@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SupersetTable, SupersetDashboard } from '../models/payment.model';
+import { SupersetTable, SupersetDashboard, SupersetGuestToken } from '../models/payment.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -24,5 +24,16 @@ export class SupersetService {
 
   deleteDashboard(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/dashboards/${id}`);
+  }
+
+  /**
+   * Fetches a short-lived Superset guest token from the backend.
+   * The token is used by the Superset Embedded SDK to render a dashboard.
+   */
+  getGuestToken(dashboardId: string, username = 'guest'): Observable<SupersetGuestToken> {
+    const params = new HttpParams()
+      .set('dashboardId', dashboardId)
+      .set('username', username);
+    return this.http.get<SupersetGuestToken>(`${this.baseUrl}/guest-token`, { params });
   }
 }

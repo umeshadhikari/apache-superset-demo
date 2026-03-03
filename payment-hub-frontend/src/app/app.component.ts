@@ -55,6 +55,7 @@ export class AppComponent {
       { path: '/statements', label: 'Statements' },
       { path: '/dashboard-builder', label: 'Dashboard Builder' },
       { path: '/dashboards', label: 'My Dashboards' },
+      { path: '/superset-embed', label: 'Embedded Dashboard' },
     ];
     // Check more specific routes first
     const sorted = allItems.sort((a, b) => b.path.length - a.path.length);
