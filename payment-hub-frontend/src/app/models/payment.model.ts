@@ -100,3 +100,8 @@ export interface SupersetGuestToken {
   token: string;
   supersetDomain: string;
 }
+
+export interface SupersetRemoteDashboard {
+  uuid: string;
+  title: string;
+}

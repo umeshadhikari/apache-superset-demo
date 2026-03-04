@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SupersetTable, SupersetDashboard, SupersetGuestToken } from '../models/payment.model';
+import { SupersetTable, SupersetDashboard, SupersetGuestToken, SupersetRemoteDashboard } from '../models/payment.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -24,6 +24,14 @@ export class SupersetService {
 
   deleteDashboard(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/dashboards/${id}`);
+  }
+
+  /**
+   * Fetches the list of dashboards available in Apache Superset.
+   * Used by the Dashboard Builder to allow UUID auto-linking.
+   */
+  getSupersetDashboards(): Observable<SupersetRemoteDashboard[]> {
+    return this.http.get<SupersetRemoteDashboard[]>(`${this.baseUrl}/superset-dashboards`);
   }
 
   /**

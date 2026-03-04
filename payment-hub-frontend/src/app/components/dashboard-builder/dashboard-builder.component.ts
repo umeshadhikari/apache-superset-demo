@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SupersetTable, SupersetDashboard, SupersetColumn } from '../../models/payment.model';
+import { SupersetTable, SupersetDashboard, SupersetColumn, SupersetRemoteDashboard } from '../../models/payment.model';
 import { SupersetService } from '../../services/superset.service';
 
 @Component({
@@ -17,6 +17,12 @@ export class DashboardBuilderComponent implements OnInit {
   error = '';
   saveSuccess = false;
   savedDashboard: SupersetDashboard | null = null;
+
+  /** Dashboards fetched from Superset for UUID linking. */
+  supersetDashboards: SupersetRemoteDashboard[] = [];
+  supersetDashboardsLoading = false;
+  supersetDashboardsError = '';
+  uuidWarning = '';
 
   chartTypes = ['Tabular', 'Bar Chart', 'Pie Chart', 'Line Chart', 'Scatter Plot'];
 
@@ -44,6 +50,49 @@ export class DashboardBuilderComponent implements OnInit {
         this.loading = false;
       }
     });
+    this.loadSupersetDashboards();
+  }
+
+  loadSupersetDashboards(): void {
+    this.supersetDashboardsLoading = true;
+    this.supersetDashboardsError = '';
+    this.supersetService.getSupersetDashboards().subscribe({
+      next: (data) => {
+        this.supersetDashboards = data;
+        this.supersetDashboardsLoading = false;
+      },
+      error: () => {
+        this.supersetDashboardsError = 'Could not fetch Superset dashboards. You can still enter a UUID manually.';
+        this.supersetDashboardsLoading = false;
+      }
+    });
+  }
+
+  /** Auto-links a UUID when the user selects a Superset dashboard title from the dropdown. */
+  onSupersetDashboardSelected(uuid: string): void {
+    this.dashboard.supersetDashboardId = uuid;
+    this.uuidWarning = '';
+  }
+
+  /**
+   * Tries to auto-link the UUID by matching the current dashboard name
+   * against Superset dashboard titles (case-insensitive).
+   */
+  autoLinkUuid(): void {
+    const name = this.dashboard.dashboardName.trim().toLowerCase();
+    if (!name) {
+      this.uuidWarning = 'Enter a dashboard name first to use auto-link.';
+      return;
+    }
+    const match = this.supersetDashboards.find(
+      d => d.title.toLowerCase() === name
+    );
+    if (match) {
+      this.dashboard.supersetDashboardId = match.uuid;
+      this.uuidWarning = '';
+    } else {
+      this.uuidWarning = 'No Superset dashboard title exactly matches "' + this.dashboard.dashboardName + '". Please select or enter a UUID manually.';
+    }
   }
 
   selectTable(table: SupersetTable): void {
@@ -85,6 +134,11 @@ export class DashboardBuilderComponent implements OnInit {
       this.error = 'Please provide a dashboard name and select at least one table.';
       return;
     }
+    if (!this.dashboard.supersetDashboardId) {
+      this.uuidWarning = 'No Superset UUID entered. The dashboard cannot be embedded until a UUID is linked.';
+    } else {
+      this.uuidWarning = '';
+    }
     this.saving = true;
     this.error = '';
     this.supersetService.createDashboard(this.dashboard).subscribe({
@@ -124,5 +178,6 @@ export class DashboardBuilderComponent implements OnInit {
     this.saveSuccess = false;
     this.savedDashboard = null;
     this.selectedTable = null;
+    this.uuidWarning = '';
   }
 }

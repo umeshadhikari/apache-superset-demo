@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +28,10 @@ import java.util.stream.Collectors;
 public class SupersetService {
 
     private static final Logger log = LoggerFactory.getLogger(SupersetService.class);
+
+    /** Domain tables that are allowed for dashboard creation. */
+    static final Set<String> ALLOWED_TABLES = Set.of(
+            "payments", "status_feedback", "dashboards", "statements");
 
     private final DataSource dataSource;
     private final SupersetDashboardRepository dashboardRepository;
@@ -39,6 +44,9 @@ public class SupersetService {
             ResultSet tableRs = meta.getTables(null, null, "%", new String[]{"TABLE"});
             while (tableRs.next()) {
                 String tableName = tableRs.getString("TABLE_NAME");
+                if (!ALLOWED_TABLES.contains(tableName)) {
+                    continue;
+                }
                 List<SupersetColumnDto> columns = new ArrayList<>();
                 ResultSet colRs = meta.getColumns(null, null, tableName, "%");
                 while (colRs.next()) {
@@ -60,6 +68,16 @@ public class SupersetService {
     }
 
     public SupersetDashboardDto saveDashboard(SupersetDashboardDto dto) {
+        if (dto.getSelectedTables() != null) {
+            List<String> disallowed = dto.getSelectedTables().stream()
+                    .filter(t -> !ALLOWED_TABLES.contains(t))
+                    .toList();
+            if (!disallowed.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Dashboard creation is not allowed for tables: " + disallowed +
+                        ". Allowed tables are: " + ALLOWED_TABLES);
+            }
+        }
         String tables = dto.getSelectedTables() != null
                 ? String.join(",", dto.getSelectedTables())
                 : "";

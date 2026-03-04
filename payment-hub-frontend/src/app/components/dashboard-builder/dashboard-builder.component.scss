@@ -67,6 +67,10 @@
 
 .form-actions { margin-top: 20px; display: flex; justify-content: flex-end; }
 
+.uuid-select-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; select { flex: 1; } }
+.hint-text { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.hint-warn { color: #f59e0b; }
+
 .success-card { flex-direction: column; gap: 16px; }
 .success-content { display: flex; align-items: flex-start; gap: 12px; .success-icon { font-size: 24px; } strong { display: block; margin-bottom: 4px; } p { font-size: 13px; color: var(--text-muted); margin: 0; } }
 .success-actions { display: flex; gap: 10px; }
