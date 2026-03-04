@@ -48,6 +48,8 @@ public class SupersetService {
                     continue;
                 }
                 List<SupersetColumnDto> columns = new ArrayList<>();
+                // TODO [review]: colRs should be opened in its own try-with-resources
+                //   to guarantee it is closed even if an exception is thrown mid-loop.
                 ResultSet colRs = meta.getColumns(null, null, tableName, "%");
                 while (colRs.next()) {
                     columns.add(SupersetColumnDto.builder()
@@ -123,6 +125,8 @@ public class SupersetService {
         String yAxisColumn = null;
         try {
             if (d.getConfig() != null && !d.getConfig().isBlank()) {
+                // TODO [review]: Replace raw Map.class with new TypeReference<Map<String,Object>>(){}
+                //   to eliminate the unchecked cast and make the deserialisation type-safe.
                 Map<String, Object> configMap = objectMapper.readValue(d.getConfig(), Map.class);
                 chartType = (String) configMap.get("chartType");
                 xAxisColumn = (String) configMap.get("xAxisColumn");

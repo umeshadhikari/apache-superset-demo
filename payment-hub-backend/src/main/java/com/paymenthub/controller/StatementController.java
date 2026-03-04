@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/statements")
+// TODO [review]: @CrossOrigin here is redundant – CorsConfig already handles it globally. Remove.
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class StatementController {

@@ -15,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/payments")
+// TODO [review]: @CrossOrigin here is redundant – CorsConfig already handles it globally. Remove.
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class PaymentController {
@@ -36,6 +37,7 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.getPaymentByReference(reference));
     }
 
+    // TODO [review]: A partial status update should use @PatchMapping, not @PutMapping.
     @PutMapping("/{reference}/status")
     public ResponseEntity<Payment> updatePaymentStatus(
             @PathVariable String reference,

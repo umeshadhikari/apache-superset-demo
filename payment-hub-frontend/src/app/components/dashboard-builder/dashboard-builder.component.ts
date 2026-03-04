@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SupersetTable, SupersetDashboard, SupersetColumn, SupersetRemoteDashboard } from '../../models/payment.model';
 import { SupersetService } from '../../services/superset.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   standalone: false,
@@ -155,7 +156,7 @@ export class DashboardBuilderComponent implements OnInit {
   }
 
   openInSuperset(dashboard: SupersetDashboard | null): void {
-    const url = dashboard?.supersetUrl || 'http://localhost:8088';
+    const url = dashboard?.supersetUrl || environment.superset.baseUrl;
     window.open(url, '_blank');
   }
 

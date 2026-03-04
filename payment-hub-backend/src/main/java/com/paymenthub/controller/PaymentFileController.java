@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/payment-files")
+// TODO [review]: @CrossOrigin here is redundant – CorsConfig already handles it globally. Remove.
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class PaymentFileController {
@@ -21,6 +22,8 @@ public class PaymentFileController {
         return ResponseEntity.ok(paymentFileService.getPaymentFiles());
     }
 
+    // TODO [review]: Accept a dedicated PaymentFileRequestDto instead of the JPA entity,
+    //   and add @Valid so bean-validation annotations on the DTO are enforced.
     @PostMapping
     public ResponseEntity<PaymentFile> createPaymentFile(@RequestBody PaymentFile paymentFile) {
         return ResponseEntity.ok(paymentFileService.createPaymentFile(paymentFile));

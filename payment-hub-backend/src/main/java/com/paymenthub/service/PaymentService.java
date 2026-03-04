@@ -73,6 +73,8 @@ public class PaymentService {
         payment.setStatus(dto.getStatus());
         payment.setErrorCode(dto.getErrorCode());
         payment.setErrorMessage(dto.getErrorMessage());
+        // TODO [review]: Replace raw String literals with a PaymentStatus enum
+        //   to prevent typos and enable IDE-safe refactoring.
         if ("COMPLETED".equals(dto.getStatus()) || "FAILED".equals(dto.getStatus())) {
             payment.setProcessedAt(LocalDateTime.now());
         }

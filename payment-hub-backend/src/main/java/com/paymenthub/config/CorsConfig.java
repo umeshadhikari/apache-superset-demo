@@ -12,8 +12,8 @@ public class CorsConfig {
     @Bean
     public CorsFilter corsFilter() {
         // NOTE: http://localhost:4200 is explicitly allowed for local Angular dev.
-        // All other origins are permitted via pattern for demo purposes only.
-        // Restrict to specific origins in any non-demo environment.
+        // TODO [review]: Remove the wildcard pattern below before sharing externally;
+        //   restrict to specific origins and remove the redundant @CrossOrigin on each controller.
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://localhost:4200");
         config.addAllowedOriginPattern("*");
