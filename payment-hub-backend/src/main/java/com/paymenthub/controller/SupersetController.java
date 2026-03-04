@@ -2,6 +2,7 @@ package com.paymenthub.controller;
 
 import com.paymenthub.dto.SupersetDashboardDto;
 import com.paymenthub.dto.SupersetGuestTokenResponse;
+import com.paymenthub.dto.SupersetRemoteDashboardDto;
 import com.paymenthub.dto.SupersetTableDto;
 import com.paymenthub.service.SupersetApiService;
 import com.paymenthub.service.SupersetService;
@@ -26,8 +27,12 @@ public class SupersetController {
     }
 
     @PostMapping("/dashboards")
-    public ResponseEntity<SupersetDashboardDto> saveDashboard(@RequestBody SupersetDashboardDto dto) {
-        return ResponseEntity.ok(supersetService.saveDashboard(dto));
+    public ResponseEntity<?> saveDashboard(@RequestBody SupersetDashboardDto dto) {
+        try {
+            return ResponseEntity.ok(supersetService.saveDashboard(dto));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/dashboards")
@@ -39,6 +44,15 @@ public class SupersetController {
     public ResponseEntity<Void> deleteDashboard(@PathVariable Long id) {
         supersetService.deleteDashboard(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Returns the list of dashboards available in Superset.
+     * The frontend uses this to let the user pick or auto-link a UUID when building a dashboard.
+     */
+    @GetMapping("/superset-dashboards")
+    public ResponseEntity<List<SupersetRemoteDashboardDto>> getSupersetDashboards() {
+        return ResponseEntity.ok(supersetApiService.getRemoteDashboards());
     }
 
     /**

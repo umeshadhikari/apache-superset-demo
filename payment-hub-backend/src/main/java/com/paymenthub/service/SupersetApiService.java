@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymenthub.dto.SupersetGuestTokenRequest;
 import com.paymenthub.dto.SupersetGuestTokenResponse;
+import com.paymenthub.dto.SupersetRemoteDashboardDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +41,9 @@ public class SupersetApiService {
     @Value("${superset.admin.password:admin}")
     private String adminPassword;
 
+    @Value("${superset.dashboard.page-size:100}")
+    private int dashboardPageSize;
+
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
@@ -58,6 +63,41 @@ public class SupersetApiService {
     }
 
     // ── Private helpers ───────────────────────────────────────────────────
+
+    /**
+     * Fetches the list of dashboards from Superset ({@code GET /api/v1/dashboard/}).
+     * Returns a lightweight list of {@link SupersetRemoteDashboardDto} containing the
+     * dashboard UUID and title so the frontend can auto-link or manually select a UUID.
+     */
+    public List<SupersetRemoteDashboardDto> getRemoteDashboards() {
+        String jwt = loginAsAdmin();
+        String url = supersetUrl + "/api/v1/dashboard/?q=(page_size:" + dashboardPageSize + ")";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(jwt);
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<JsonNode> response =
+                    restTemplate.exchange(url, HttpMethod.GET, request, JsonNode.class);
+            JsonNode body = response.getBody();
+            List<SupersetRemoteDashboardDto> result = new ArrayList<>();
+            if (body != null && body.has("result")) {
+                for (JsonNode item : body.get("result")) {
+                    String id = item.path("uuid").asText(null);
+                    String title = item.path("dashboard_title").asText(null);
+                    if (id != null && title != null) {
+                        result.add(new SupersetRemoteDashboardDto(id, title));
+                    }
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            log.error("Failed to fetch dashboards from Superset at {}: {}", url, e.getMessage());
+            throw new RuntimeException("Failed to fetch Superset dashboards: " + e.getMessage(), e);
+        }
+    }
 
     private String loginAsAdmin() {
         String url = supersetUrl + "/api/v1/security/login";
