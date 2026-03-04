@@ -4,12 +4,9 @@ target/
 *.war
 *.ear
 
-# IntelliJ IDEA — keep .idea/ committed (project setup files)
-# but exclude workspace-local files
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/usage.statistics.xml
-.idea/shelf/
+# IntelliJ IDEA
+.idea/
+*.iml
 *.iws
 
 # macOS

@@ -1,5 +1,6 @@
 package com.paymenthub.service;
 
+import com.paymenthub.dto.DailyStatDto;
 import com.paymenthub.dto.DashboardStatsDto;
 import com.paymenthub.dto.PaymentRequestDto;
 import com.paymenthub.dto.PaymentStatusUpdateDto;
@@ -15,9 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Service
@@ -99,15 +98,14 @@ public class PaymentService {
                 .build();
     }
 
-    public List<Map<String, Object>> getDailyStats() {
+    public List<DailyStatDto> getDailyStats() {
         List<Object[]> rows = paymentRepository.findDailyStats();
-        return rows.stream().map(row -> {
-            Map<String, Object> map = new HashMap<>();
-            map.put("date", row[0]);
-            map.put("status", row[1]);
-            map.put("count", row[2]);
-            map.put("total", row[3]);
-            return map;
-        }).toList();
+        return rows.stream().map(row -> DailyStatDto.builder()
+                .date(row[0] != null ? java.time.LocalDate.parse(row[0].toString()) : null)
+                .status((String) row[1])
+                .count(((Number) row[2]).longValue())
+                .total(row[3] != null ? new java.math.BigDecimal(row[3].toString()) : java.math.BigDecimal.ZERO)
+                .build()
+        ).toList();
     }
 }

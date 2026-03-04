@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class DataInitializer implements ApplicationRunner {
+public class ApplicationStartupLogger implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {

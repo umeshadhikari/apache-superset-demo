@@ -1,6 +1,6 @@
 package com.paymenthub.controller;
 
-import com.paymenthub.model.PaymentFile;
+import com.paymenthub.dto.PaymentFileDto;
 import com.paymenthub.service.PaymentFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,29 +10,28 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/payment-files")
-@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class PaymentFileController {
 
     private final PaymentFileService paymentFileService;
 
     @GetMapping
-    public ResponseEntity<List<PaymentFile>> getPaymentFiles() {
+    public ResponseEntity<List<PaymentFileDto>> getPaymentFiles() {
         return ResponseEntity.ok(paymentFileService.getPaymentFiles());
     }
 
     @PostMapping
-    public ResponseEntity<PaymentFile> createPaymentFile(@RequestBody PaymentFile paymentFile) {
-        return ResponseEntity.ok(paymentFileService.createPaymentFile(paymentFile));
+    public ResponseEntity<PaymentFileDto> createPaymentFile(@RequestBody PaymentFileDto paymentFileDto) {
+        return ResponseEntity.ok(paymentFileService.createPaymentFile(paymentFileDto));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentFile> getPaymentFileById(@PathVariable Long id) {
+    public ResponseEntity<PaymentFileDto> getPaymentFileById(@PathVariable Long id) {
         return ResponseEntity.ok(paymentFileService.getPaymentFileById(id));
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<PaymentFile> updateFileStatus(
+    public ResponseEntity<PaymentFileDto> updateFileStatus(
             @PathVariable Long id,
             @RequestParam String status) {
         return ResponseEntity.ok(paymentFileService.updateFileStatus(id, status));
