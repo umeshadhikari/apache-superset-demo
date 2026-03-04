@@ -9,7 +9,7 @@ export const environment = {
     password: 'demo_pass',
   },
   superset: {
-    baseUrl: 'http://localhost:8088',
+    baseUrl: '/superset-proxy',
     username: 'admin',
     password: 'admin',
   },

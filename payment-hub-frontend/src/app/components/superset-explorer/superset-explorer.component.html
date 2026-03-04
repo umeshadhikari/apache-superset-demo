@@ -13,10 +13,12 @@
   </div>
 
   <iframe
+    #supersetFrame
     *ngIf="!iframeError"
     [src]="supersetUrl"
     class="superset-full-iframe"
     allowfullscreen
+    (load)="onIframeLoad()"
     (error)="onIframeError()">
   </iframe>
 </div>
