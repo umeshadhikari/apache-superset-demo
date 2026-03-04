@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: '',
+  apiUrl: 'http://localhost:8080',
   database: {
     host: 'localhost',
     port: 5432,
@@ -9,7 +9,7 @@ export const environment = {
     password: 'demo_pass',
   },
   superset: {
-    baseUrl: '/superset-proxy',
+    baseUrl: 'http://localhost:8088',
     username: 'admin',
     password: 'admin',
   },
