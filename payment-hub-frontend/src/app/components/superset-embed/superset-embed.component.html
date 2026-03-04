@@ -6,6 +6,17 @@
     <a routerLink="/dashboards" class="btn btn-secondary btn-sm">← Back to Dashboards</a>
   </div>
 
+  <!-- Offline banner -->
+  <div *ngIf="isOffline" class="alert alert-warning">
+    <strong>⚠️ You are offline.</strong> Reconnecting automatically when network is restored.
+  </div>
+
+  <!-- Session-expired overlay (mid-session token refresh failure) -->
+  <div *ngIf="sessionExpired" class="alert alert-warning">
+    <strong>🔑 Session expired.</strong> Your dashboard session has expired.
+    <button class="btn btn-secondary btn-sm retry-btn" (click)="retry()">Reload dashboard</button>
+  </div>
+
   <div *ngIf="loading" class="loading-container">
     <div class="spinner"></div>
     <span>Loading dashboard…</span>
@@ -17,6 +28,7 @@
       Make sure Apache Superset is running (<code>docker compose up superset</code>),
       the dashboard UUID is correct, and the backend can reach Superset.
     </p>
+    <button class="btn btn-secondary btn-sm retry-btn" (click)="retry()">Retry</button>
   </div>
 
   <!-- UUID mode: Superset Embedded SDK mounts an iframe inside this container -->
