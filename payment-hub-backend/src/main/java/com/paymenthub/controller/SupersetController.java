@@ -70,4 +70,15 @@ public class SupersetController {
         SupersetGuestTokenResponse response = supersetApiService.getGuestToken(dashboardId, username, List.of());
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * Proxies a health check to Apache Superset.
+     * Returns 200 if Superset is reachable, 503 otherwise.
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Void> health() {
+        return supersetApiService.isHealthy()
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(503).build();
+    }
 }

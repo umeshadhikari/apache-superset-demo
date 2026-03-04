@@ -44,4 +44,12 @@ export class SupersetService {
       .set('username', username);
     return this.http.get<SupersetGuestToken>(`${this.baseUrl}/guest-token`, { params });
   }
+
+  /**
+   * Pings the backend health-check endpoint which in turn probes Superset.
+   * Completes normally when Superset is reachable; errors when it is not.
+   */
+  healthCheck(): Observable<void> {
+    return this.http.get<void>(`${this.baseUrl}/health`);
+  }
 }
