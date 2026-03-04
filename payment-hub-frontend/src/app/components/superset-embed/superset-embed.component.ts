@@ -5,7 +5,6 @@ import { SupersetService } from '../../services/superset.service';
 import { SupersetGuestToken } from '../../models/payment.model';
 import { embedDashboard } from '@superset-ui/embedded-sdk';
 import { environment } from '../../../environments/environment';
-import { retry, timer } from 'rxjs';
 
 /** UUID v4 pattern — used to distinguish SDK-embeddable UUIDs from numeric IDs. */
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -24,22 +23,15 @@ export class SupersetEmbedComponent implements OnInit, OnDestroy {
   loading = true;
   error = '';
 
-  /** True when the user is offline. */
-  isOffline = false;
-  /** True when a mid-session token refresh has failed — prompts the user to reload. */
-  sessionExpired = false;
-
   /** True when `dashboardId` is a UUID supported by the Embedded SDK. */
   isUuidMode = false;
   /** Safe iframe URL used when falling back to direct iframe embedding. */
   iframeSrc: SafeResourceUrl | null = null;
 
   private readonly supersetBaseUrl = environment.superset.baseUrl;
-  private readonly RETRY_BACKOFF_BASE_MS = 2_000;
-  private cachedTokenInfo: SupersetGuestToken | null = null;
 
-  private offlineHandler = () => { this.isOffline = true; };
-  private onlineHandler  = () => { this.isOffline = false; this.retry(); };
+  /** Most recent guest token response — updated on every refresh by the Embedded SDK. */
+  private cachedTokenInfo: SupersetGuestToken | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -48,9 +40,6 @@ export class SupersetEmbedComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    window.addEventListener('offline', this.offlineHandler);
-    window.addEventListener('online',  this.onlineHandler);
-
     this.dashboardId = this.route.snapshot.paramMap.get('dashboardId') || '';
     if (!this.dashboardId) {
       this.error = 'No dashboard ID provided.';
@@ -70,61 +59,46 @@ export class SupersetEmbedComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('offline', this.offlineHandler);
-    window.removeEventListener('online',  this.onlineHandler);
     if (this.embedContainer?.nativeElement) {
       this.embedContainer.nativeElement.innerHTML = '';
     }
-  }
-
-  retry(): void {
-    this.error = '';
-    this.sessionExpired = false;
-    this.loadEmbeddedDashboard();
   }
 
   private loadEmbeddedDashboard(): void {
     this.loading = true;
     this.error = '';
 
-    // Fetch initial guest token with automatic exponential-backoff retry (max 3 attempts)
-    this.supersetService.getGuestToken(this.dashboardId).pipe(
-      retry({ count: 3, delay: (_, attempt) => timer(attempt * this.RETRY_BACKOFF_BASE_MS) })
-    ).subscribe({
+    // Fetch initial guest token to discover the Superset domain
+    this.supersetService.getGuestToken(this.dashboardId).subscribe({
       next: (tokenInfo) => {
         this.cachedTokenInfo = tokenInfo;
         this.mountDashboard(tokenInfo.supersetDomain);
       },
       error: (err) => {
-        this.error = this.describeError(err);
+        this.error = `Failed to reach backend for guest token: ${err.message || 'Unknown error'}`;
         this.loading = false;
       }
     });
   }
 
   private mountDashboard(supersetDomain: string): void {
-    try {
-      embedDashboard({
-        id: this.dashboardId,
-        supersetDomain,
-        mountPoint: this.embedContainer.nativeElement,
-        fetchGuestToken: () => this.fetchGuestToken(),
-        dashboardUiConfig: {
-          hideTitle: false,
-          hideChartControls: false,
-          hideTab: false,
-          filters: { visible: true, expanded: true }
-        }
-      }).then(() => {
-        this.loading = false;
-      }).catch((err: Error) => {
-        this.error = `Failed to embed dashboard: ${err.message}`;
-        this.loading = false;
-      });
-    } catch (err: unknown) {
-      this.error = `Failed to initialise Superset SDK: ${err instanceof Error ? err.message : String(err)}`;
+    embedDashboard({
+      id: this.dashboardId,
+      supersetDomain,
+      mountPoint: this.embedContainer.nativeElement,
+      fetchGuestToken: () => this.fetchGuestToken(),
+      dashboardUiConfig: {
+        hideTitle: false,
+        hideChartControls: false,
+        hideTab: false,
+        filters: { visible: true, expanded: true }
+      }
+    }).then(() => {
       this.loading = false;
-    }
+    }).catch((err: Error) => {
+      this.error = `Failed to embed dashboard: ${err.message}`;
+      this.loading = false;
+    });
   }
 
   private fetchGuestToken(): Promise<string> {
@@ -134,28 +108,13 @@ export class SupersetEmbedComponent implements OnInit, OnDestroy {
           this.cachedTokenInfo = res;
           resolve(res.token);
         },
-        error: (err) => {
-          // Show session-expired overlay when a mid-session token refresh fails
-          this.sessionExpired = true;
-          reject(new Error(
-            `Failed to fetch guest token for dashboard "${this.dashboardId}": ` +
-            (err.status ? `HTTP ${err.status} — ` : '') +
-            (err.message || 'Unknown error')
-          ));
-        }
+        error: (err) => reject(new Error(
+          `Failed to fetch guest token for dashboard "${this.dashboardId}": ` +
+          (err.status ? `HTTP ${err.status} — ` : '') +
+          (err.message || 'Unknown error')
+        ))
       });
     });
-  }
-
-  /** Maps an HTTP error to a human-readable message. */
-  private describeError(err: { status?: number; message?: string }): string {
-    if (err.status === 401) {
-      return 'Authentication failed. Please refresh the page.';
-    }
-    if (err.status === 503) {
-      return 'Apache Superset is temporarily unavailable. Please try again later.';
-    }
-    return `Could not load dashboard: ${err.message || 'Unknown error'}`;
   }
 }
 

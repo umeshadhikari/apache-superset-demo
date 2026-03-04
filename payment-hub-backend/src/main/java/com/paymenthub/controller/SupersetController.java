@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/superset")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class SupersetController {
 
@@ -68,16 +69,5 @@ public class SupersetController {
             @RequestParam(defaultValue = "guest") String username) {
         SupersetGuestTokenResponse response = supersetApiService.getGuestToken(dashboardId, username, List.of());
         return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Proxies a health check to Apache Superset.
-     * Returns 200 if Superset is reachable, 503 otherwise.
-     */
-    @GetMapping("/health")
-    public ResponseEntity<Void> health() {
-        return supersetApiService.isHealthy()
-                ? ResponseEntity.ok().build()
-                : ResponseEntity.status(503).build();
     }
 }

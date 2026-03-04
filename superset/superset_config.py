@@ -28,7 +28,7 @@ ENABLE_CORS = True
 CORS_OPTIONS = {
     "supports_credentials": True,
     "allow_headers": ["*"],
-    "resources": {r"/*": {"origins": ["http://localhost:4200", "http://localhost:8080"]}},
+    "resources": {r"/api/*": {"origins": ["http://localhost:4200", "http://localhost:8080"]}},
 }
 
 # HTTP headers for embedding
