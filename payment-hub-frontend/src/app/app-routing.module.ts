@@ -9,6 +9,7 @@ import { StatementsComponent } from './components/statements/statements.componen
 import { DashboardBuilderComponent } from './components/dashboard-builder/dashboard-builder.component';
 import { DashboardListComponent } from './components/dashboard-list/dashboard-list.component';
 import { SupersetEmbedComponent } from './components/superset-embed/superset-embed.component';
+import { SupersetExplorerComponent } from './components/superset-explorer/superset-explorer.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path: 'dashboard-builder', component: DashboardBuilderComponent },
   { path: 'dashboards', component: DashboardListComponent },
   { path: 'superset-embed/:dashboardId', component: SupersetEmbedComponent },
+  { path: 'analytics/superset', component: SupersetExplorerComponent },
   { path: '**', redirectTo: '' }
 ];
 

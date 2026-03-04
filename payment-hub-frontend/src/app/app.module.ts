@@ -14,6 +14,7 @@ import { StatementsComponent } from './components/statements/statements.componen
 import { DashboardBuilderComponent } from './components/dashboard-builder/dashboard-builder.component';
 import { DashboardListComponent } from './components/dashboard-list/dashboard-list.component';
 import { SupersetEmbedComponent } from './components/superset-embed/superset-embed.component';
+import { SupersetExplorerComponent } from './components/superset-explorer/superset-explorer.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { SupersetEmbedComponent } from './components/superset-embed/superset-emb
     StatementsComponent,
     DashboardBuilderComponent,
     DashboardListComponent,
-    SupersetEmbedComponent
+    SupersetEmbedComponent,
+    SupersetExplorerComponent
   ],
   imports: [
     BrowserModule,

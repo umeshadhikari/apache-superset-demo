@@ -29,6 +29,7 @@ export class AppComponent {
       items: [
         { label: 'Dashboard Builder', icon: '🛠️', path: '/dashboard-builder' },
         { label: 'My Dashboards', icon: '📈', path: '/dashboards' },
+        { label: 'Superset Analytics', icon: '🔍', path: '/analytics/superset' },
       ]
     }
   ];
@@ -56,6 +57,7 @@ export class AppComponent {
       { path: '/dashboard-builder', label: 'Dashboard Builder' },
       { path: '/dashboards', label: 'My Dashboards' },
       { path: '/superset-embed', label: 'Embedded Dashboard' },
+      { path: '/analytics/superset', label: 'Superset Analytics' },
     ];
     // Check more specific routes first
     const sorted = allItems.sort((a, b) => b.path.length - a.path.length);
