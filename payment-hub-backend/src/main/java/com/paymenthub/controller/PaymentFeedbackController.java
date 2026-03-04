@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/feedback")
+// TODO [review]: @CrossOrigin here is redundant – CorsConfig already handles it globally. Remove.
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class PaymentFeedbackController {
@@ -22,6 +23,8 @@ public class PaymentFeedbackController {
         return ResponseEntity.ok(feedbackService.getFeedbackByPaymentReference(paymentReference));
     }
 
+    // TODO [review]: Accept a dedicated FeedbackRequestDto instead of the JPA entity,
+    //   and add @Valid so bean-validation annotations on the DTO are enforced.
     @PostMapping
     public ResponseEntity<PaymentFeedback> createFeedback(@RequestBody PaymentFeedback feedback) {
         return ResponseEntity.ok(feedbackService.createFeedback(feedback));

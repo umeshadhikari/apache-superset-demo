@@ -34,6 +34,8 @@ public class PaymentFileService {
     public PaymentFile updateFileStatus(Long id, String status) {
         PaymentFile file = getPaymentFileById(id);
         file.setStatus(status);
+        // TODO [review]: Replace raw String literals with a FileStatus enum
+        //   to prevent typos and enable IDE-safe refactoring.
         if ("COMPLETED".equals(status) || "FAILED".equals(status) || "REJECTED".equals(status)) {
             file.setProcessedAt(LocalDateTime.now());
         }

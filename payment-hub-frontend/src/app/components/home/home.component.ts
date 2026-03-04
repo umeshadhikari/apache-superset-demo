@@ -47,7 +47,7 @@ export class HomeComponent implements OnInit {
     return map[status] || 'badge-secondary';
   }
 
-  formatAmount(amount: number): string {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+  formatAmount(amount: number, currency = 'USD'): string {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
   }
 }
