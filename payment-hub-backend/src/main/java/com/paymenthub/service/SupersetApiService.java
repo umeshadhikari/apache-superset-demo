@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymenthub.dto.SupersetGuestTokenRequest;
 import com.paymenthub.dto.SupersetGuestTokenResponse;
 import com.paymenthub.dto.SupersetRemoteDashboardDto;
+import com.paymenthub.exception.SupersetIntegrationException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +96,7 @@ public class SupersetApiService {
             return result;
         } catch (Exception e) {
             log.error("Failed to fetch dashboards from Superset at {}: {}", url, e.getMessage());
-            throw new RuntimeException("Failed to fetch Superset dashboards: " + e.getMessage(), e);
+            throw new SupersetIntegrationException("Failed to fetch Superset dashboards: " + e.getMessage(), e);
         }
     }
 
@@ -115,12 +116,12 @@ public class SupersetApiService {
             ResponseEntity<JsonNode> response = restTemplate.postForEntity(url, request, JsonNode.class);
             JsonNode node = response.getBody();
             if (node == null || !node.has("access_token")) {
-                throw new RuntimeException("Superset login did not return an access_token");
+                throw new SupersetIntegrationException("Superset login did not return an access_token");
             }
             return node.get("access_token").asText();
         } catch (Exception e) {
             log.error("Failed to authenticate with Superset at {}: {}", url, e.getMessage());
-            throw new RuntimeException("Failed to authenticate with Superset: " + e.getMessage(), e);
+            throw new SupersetIntegrationException("Failed to authenticate with Superset: " + e.getMessage(), e);
         }
     }
 
@@ -161,12 +162,12 @@ public class SupersetApiService {
             ResponseEntity<JsonNode> response = restTemplate.postForEntity(url, request, JsonNode.class);
             JsonNode node = response.getBody();
             if (node == null || !node.has("token")) {
-                throw new RuntimeException("Superset guest_token/ did not return a token");
+                throw new SupersetIntegrationException("Superset guest_token/ did not return a token");
             }
             return node.get("token").asText();
         } catch (Exception e) {
             log.error("Failed to obtain guest token from Superset for dashboard {}: {}", dashboardId, e.getMessage());
-            throw new RuntimeException("Failed to obtain Superset guest token: " + e.getMessage(), e);
+            throw new SupersetIntegrationException("Failed to obtain Superset guest token: " + e.getMessage(), e);
         }
     }
 }

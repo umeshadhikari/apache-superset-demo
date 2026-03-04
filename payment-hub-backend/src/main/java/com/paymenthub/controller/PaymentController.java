@@ -1,5 +1,6 @@
 package com.paymenthub.controller;
 
+import com.paymenthub.dto.DailyStatDto;
 import com.paymenthub.dto.DashboardStatsDto;
 import com.paymenthub.dto.PaymentRequestDto;
 import com.paymenthub.dto.PaymentStatusUpdateDto;
@@ -11,11 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/payments")
-@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class PaymentController {
 
@@ -49,7 +48,7 @@ public class PaymentController {
     }
 
     @GetMapping("/daily-stats")
-    public ResponseEntity<List<Map<String, Object>>> getDailyStats() {
+    public ResponseEntity<List<DailyStatDto>> getDailyStats() {
         return ResponseEntity.ok(paymentService.getDailyStats());
     }
 }

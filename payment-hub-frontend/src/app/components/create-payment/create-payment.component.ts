@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Payment, Account } from '../../models/payment.model';
@@ -11,13 +11,14 @@ import { AccountService } from '../../services/account.service';
   templateUrl: './create-payment.component.html',
   styleUrls: ['./create-payment.component.scss']
 })
-export class CreatePaymentComponent implements OnInit {
+export class CreatePaymentComponent implements OnInit, OnDestroy {
   paymentForm: FormGroup;
   accounts: Account[] = [];
   loading = false;
   submitting = false;
   error = '';
   success = '';
+  private redirectTimeout?: ReturnType<typeof setTimeout>;
 
   paymentTypes = ['CREDIT_TRANSFER', 'DIRECT_DEBIT', 'BULK_PAYMENT', 'INTERNAL'];
   channels = ['ONLINE', 'MOBILE', 'BRANCH', 'ATM', 'API'];
@@ -56,6 +57,12 @@ export class CreatePaymentComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.redirectTimeout !== undefined) {
+      clearTimeout(this.redirectTimeout);
+    }
+  }
+
   onSubmit(): void {
     if (this.paymentForm.invalid) return;
     this.submitting = true;
@@ -66,7 +73,7 @@ export class CreatePaymentComponent implements OnInit {
       next: (created) => {
         this.success = `Payment ${created.paymentReference} created successfully!`;
         this.submitting = false;
-        setTimeout(() => this.router.navigate(['/payments']), 2000);
+        this.redirectTimeout = setTimeout(() => this.router.navigate(['/payments']), 2000);
       },
       error: () => {
         this.error = 'Failed to create payment. Please try again.';
