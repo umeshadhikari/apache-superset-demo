@@ -1,0 +1,22 @@
+<div class="explorer-page">
+  <div class="explorer-banner">
+    <span class="banner-icon">🔍</span>
+    You are viewing <strong>Apache Superset</strong> embedded. All Superset features are available here.
+  </div>
+
+  <div *ngIf="iframeError" class="alert alert-error">
+    <strong>Unable to reach Apache Superset.</strong>
+    <p class="error-hint">
+      Make sure Superset is running (<code>docker compose up superset</code>) and accessible at
+      <code>{{ supersetBaseUrl }}</code>.
+    </p>
+  </div>
+
+  <iframe
+    *ngIf="!iframeError"
+    [src]="supersetUrl"
+    class="superset-full-iframe"
+    allowfullscreen
+    (error)="onIframeError()">
+  </iframe>
+</div>

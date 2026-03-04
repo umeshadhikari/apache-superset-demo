@@ -19,9 +19,8 @@ TALISMAN_ENABLED = not _is_dev
 
 # Content Security Policy — allow Angular dev server and backend to embed Superset in iframes.
 TALISMAN_CONFIG = {
-    "content_security_policy": {
-        "frame-ancestors": ["'self'", "http://localhost:4200", "http://localhost:8080"],
-    }
+    "frame_options": "ALLOWALL",
+    "content_security_policy": None
 }
 
 # CORS — allow Angular dev server and Spring Boot backend

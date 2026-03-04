@@ -1,0 +1,41 @@
+.explorer-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.explorer-banner {
+  padding: 0.6rem 1rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  color: #1e40af;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.banner-icon {
+  margin-right: 0.4rem;
+}
+
+.superset-full-iframe {
+  flex: 1;
+  width: 100%;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+  min-height: calc(100vh - 130px);
+}
+
+.alert-error {
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #dc2626;
+}
+
+.error-hint {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
