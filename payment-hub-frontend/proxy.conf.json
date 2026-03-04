@@ -1,0 +1,8 @@
+{
+  "/superset-proxy": {
+    "target": "http://localhost:8088",
+    "secure": false,
+    "pathRewrite": { "^/superset-proxy": "" },
+    "changeOrigin": true
+  }
+}
