@@ -3,12 +3,23 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SupersetTable, SupersetDashboard, SupersetGuestToken, SupersetRemoteDashboard } from '../models/payment.model';
 import { environment } from '../../environments/environment';
+import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class SupersetService {
   private baseUrl = `${environment.apiUrl}/api/superset`;
 
   constructor(private http: HttpClient) {}
+
+  /**
+   * Pings the backend health-check proxy which in turn calls Superset /health.
+   * Emits true if Superset is reachable, false otherwise (never throws).
+   */
+  healthCheck(): Observable<boolean> {
+    return (this.http.get(`${this.baseUrl}/health`, { responseType: 'text' }) as Observable<string>).pipe(
+      map(() => true)
+    );
+  }
 
   getTables(): Observable<SupersetTable[]> {
     return this.http.get<SupersetTable[]>(`${this.baseUrl}/tables`);

@@ -49,6 +49,21 @@ public class SupersetApiService {
     private final ObjectMapper objectMapper;
 
     /**
+     * Performs a health check against the Superset {@code /health} endpoint.
+     * Returns {@code true} if Superset responds with HTTP 200, {@code false} otherwise.
+     */
+    public boolean isHealthy() {
+        String url = supersetUrl + "/health";
+        try {
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            return response.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            log.warn("Superset health check failed at {}: {}", url, e.getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Generates a Superset guest token for the given dashboard UUID.
      *
      * @param dashboardId   Superset embedded dashboard UUID

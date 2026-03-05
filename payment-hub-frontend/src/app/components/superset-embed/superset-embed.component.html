@@ -6,9 +6,26 @@
     <a routerLink="/dashboards" class="btn btn-secondary btn-sm">← Back to Dashboards</a>
   </div>
 
+  <!-- Offline banner -->
+  <div *ngIf="isOffline" class="alert alert-offline">
+    <strong>⚠️ You are offline.</strong> Reconnecting will automatically retry.
+  </div>
+
+  <!-- Session expired overlay -->
+  <div *ngIf="sessionExpired" class="alert alert-warning">
+    <strong>🔒 Session expired.</strong> Your session has expired. Please refresh to continue.
+    <button class="btn btn-retry" (click)="retry()">🔄 Refresh session</button>
+  </div>
+
   <div *ngIf="loading" class="loading-container">
     <div class="spinner"></div>
     <span>Loading dashboard…</span>
+  </div>
+
+  <!-- Slow-load warning (non-blocking — loading continues in background) -->
+  <div *ngIf="slowWarning && !error" class="alert alert-warning">
+    <strong>⏳ Taking longer than expected…</strong> Superset may be slow to start.
+    <button class="btn btn-retry" (click)="retry()">🔄 Retry</button>
   </div>
 
   <div *ngIf="error" class="alert alert-error">
@@ -17,6 +34,7 @@
       Make sure Apache Superset is running (<code>docker compose up superset</code>),
       the dashboard UUID is correct, and the backend can reach Superset.
     </p>
+    <button class="btn btn-retry" (click)="retry()">🔄 Retry</button>
   </div>
 
   <!-- UUID mode: Superset Embedded SDK mounts an iframe inside this container -->
@@ -32,6 +50,7 @@
     *ngIf="!isUuidMode && iframeSrc"
     [src]="iframeSrc"
     class="superset-iframe"
-    allowfullscreen>
+    allowfullscreen
+    (load)="onIframeLoad()">
   </iframe>
 </div>

@@ -4,19 +4,39 @@
     You are viewing <strong>Apache Superset</strong> embedded. All Superset features are available here.
   </div>
 
-  <div *ngIf="iframeError" class="alert alert-error">
+  <!-- Offline banner -->
+  <div *ngIf="isOffline" class="alert alert-offline">
+    <strong>⚠️ You are offline.</strong> Reconnecting will automatically retry.
+  </div>
+
+  <!-- Health check / reachability error -->
+  <div *ngIf="!supersetReachable" class="alert alert-error">
     <strong>Unable to reach Apache Superset.</strong>
+    <p class="error-hint">{{ errorMessage }}</p>
     <p class="error-hint">
       Make sure Superset is running (<code>docker compose up superset</code>) and accessible at
       <code>{{ supersetBaseUrl }}</code>.
     </p>
+    <button class="btn btn-retry" (click)="retry()">🔄 Retry</button>
+  </div>
+
+  <!-- Loading spinner while health-checking or iframe loads -->
+  <div *ngIf="loading && supersetReachable && !isOffline" class="loading-container">
+    <div class="spinner"></div>
+    <span>Loading Superset…</span>
+  </div>
+
+  <!-- Slow-load warning (non-blocking — iframe continues in background) -->
+  <div *ngIf="slowWarning" class="alert alert-warning">
+    <strong>⏳ Taking longer than expected…</strong> Superset may be slow to start.
+    <button class="btn btn-retry" (click)="retry()">🔄 Retry</button>
   </div>
 
   <iframe
-    *ngIf="!iframeError"
+    *ngIf="supersetReachable && supersetUrl && !isOffline"
     [src]="supersetUrl"
     class="superset-full-iframe"
     allowfullscreen
-    (error)="onIframeError()">
+    (load)="onIframeLoad()">
   </iframe>
 </div>

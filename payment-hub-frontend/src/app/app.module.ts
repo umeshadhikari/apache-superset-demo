@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -15,6 +15,7 @@ import { DashboardBuilderComponent } from './components/dashboard-builder/dashbo
 import { DashboardListComponent } from './components/dashboard-list/dashboard-list.component';
 import { SupersetEmbedComponent } from './components/superset-embed/superset-embed.component';
 import { SupersetExplorerComponent } from './components/superset-explorer/superset-explorer.component';
+import { SupersetErrorHandler } from './superset-error-handler';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,9 @@ import { SupersetExplorerComponent } from './components/superset-explorer/supers
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    { provide: ErrorHandler, useClass: SupersetErrorHandler }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
