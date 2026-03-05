@@ -78,6 +78,29 @@
   background: #fef2f2;
   border: 1px solid #fca5a5;
   color: #dc2626;
+  margin-bottom: 0.75rem;
+}
+
+.alert-warning {
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.alert-offline {
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
 }
 
 .error-hint {
@@ -110,3 +133,10 @@
   padding: 0.3rem 0.7rem;
   font-size: 0.8rem;
 }
+
+.btn-retry {
+  background: var(--primary-color, #6366f1);
+  color: #fff;
+  margin-top: 0.5rem;
+}
+

@@ -55,6 +55,19 @@ public class SupersetController {
     }
 
     /**
+     * Proxied health check — returns 200 OK if Superset is reachable, or 503 if not.
+     * Used by the Angular frontend to detect whether Superset is up before rendering.
+     */
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        boolean healthy = supersetApiService.isHealthy();
+        if (healthy) {
+            return ResponseEntity.ok("ok");
+        }
+        return ResponseEntity.status(503).body("Superset is unavailable");
+    }
+
+    /**
      * Generates a short-lived Superset guest token for the given embedded dashboard UUID.
      * The Angular frontend uses this token with the Superset Embedded SDK.
      *
