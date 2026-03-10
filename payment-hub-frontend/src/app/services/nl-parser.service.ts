@@ -69,7 +69,7 @@ const TIME_FILTERS: { pattern: RegExp; filter: string; grainSqlalchemy: string }
 const VIZ_HINTS: { pattern: RegExp; vizType: string }[] = [
   { pattern: /\bpie\b/i, vizType: 'pie' },
   { pattern: /\bdonut\b/i, vizType: 'pie' },
-  { pattern: /\bbar\b/i, vizType: 'dist_bar' },
+  { pattern: /\bbar\b/i, vizType: 'echarts_timeseries_bar' },
   { pattern: /\bline\b|trend|over\s+time|timeline/i, vizType: 'echarts_timeseries_line' },
   { pattern: /\btable\b|\btabular\b/i, vizType: 'table' },
   { pattern: /\btreemap\b/i, vizType: 'treemap_v2' },
@@ -211,10 +211,7 @@ export class NlParserService {
         params['contributionMode'] = null;
         params['show_legend'] = true;
         break;
-      case 'dist_bar':
-        params['columns'] = [];
-        params['show_legend'] = true;
-        break;
+      // dist_bar removed — deprecated NVD3 viz type; use echarts_timeseries_bar instead
       case 'table':
         params['all_columns'] = groupby.length > 0
           ? [...groupby, ...(intent.metricColumn ? [intent.metricColumn] : [])]

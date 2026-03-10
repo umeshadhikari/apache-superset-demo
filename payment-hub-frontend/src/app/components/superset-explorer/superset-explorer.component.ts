@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';
 import { SupersetService } from '../../services/superset.service';
@@ -32,7 +32,8 @@ export class SupersetExplorerComponent implements OnInit, OnDestroy {
 
   constructor(
     private sanitizer: DomSanitizer,
-    private supersetService: SupersetService
+    private supersetService: SupersetService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -77,6 +78,7 @@ export class SupersetExplorerComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.errorMessage = 'Apache Superset is currently unavailable. Please try again later.';
       }
+      this.cdr.detectChanges();
     });
   }
 

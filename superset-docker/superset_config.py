@@ -80,13 +80,14 @@ GUEST_TOKEN_JWT_ALGO = "HS256"
 GUEST_TOKEN_HEADER_NAME = "X-GuestToken"
 
 # ── FIS Global Custom Theme ─────────────────────────────────
-# Inject custom CSS to brand Superset with FIS colours
-_fis_css_path = os.path.join(os.path.dirname(__file__), "fis-superset-theme.css")
-try:
-    with open(_fis_css_path, "r") as _f:
-        EXTRA_SEQUENTIAL_CSS = _f.read()
-except FileNotFoundError:
-    EXTRA_SEQUENTIAL_CSS = ""
+# Hide the Superset logo — replace with app name
+APP_ICON = "/static/assets/images/favicon.png"
+APP_NAME = "Payment Hub"
+FAVICONS = [{"href": "/static/assets/images/favicon.png"}]
+
+# Inject custom CSS globally into every Superset page
+# The CSS file is baked into the Docker image at /app/superset/static/assets/
+CUSTOM_STYLE_SHEETS = ["/static/assets/fis-superset-theme.css"]
 
 # FIS-branded colour scheme for ECharts-based visualisations
 EXTRA_CATEGORICAL_COLOR_SCHEMES = [
