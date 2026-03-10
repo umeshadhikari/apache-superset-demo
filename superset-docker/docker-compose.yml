@@ -59,6 +59,7 @@ services:
       SUPERSET_LOAD_EXAMPLES: "no"
     volumes:
       - ./superset_config.py:/app/pythonpath/superset_config.py
+      - ./fis-superset-theme.css:/app/pythonpath/fis-superset-theme.css
       - ./superset-init.sh:/app/superset-init.sh
     entrypoint: ["/bin/sh", "/app/superset-init.sh"]
     depends_on:

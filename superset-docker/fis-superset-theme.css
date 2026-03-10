@@ -1,0 +1,133 @@
+/*
+ * FIS Global Custom Theme for Apache Superset
+ * Injected via EXTRA_SEQUENTIAL_CSS in superset_config.py
+ *
+ * FIS Brand Colors:
+ *   Primary Green:  #4BCD3E
+ *   Dark Teal:      #00565b
+ *   Cyan:           #00c1d5
+ *   Navy:           #0a2540
+ *   Light Green:    #8dc63f
+ */
+
+/* ── Header / Navbar ── */
+.navbar,
+.navbar-default,
+header[role="navigation"] {
+  background: linear-gradient(90deg, #0a2540 0%, #00565b 100%) !important;
+  border-bottom: 2px solid #4BCD3E !important;
+}
+
+.navbar-brand {
+  color: #4BCD3E !important;
+  font-weight: 700 !important;
+}
+
+.navbar .navbar-nav > li > a,
+.navbar-default .navbar-nav > li > a {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.navbar .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:hover {
+  color: #4BCD3E !important;
+}
+
+.navbar .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a {
+  background: rgba(75, 205, 62, 0.12) !important;
+  color: #4BCD3E !important;
+}
+
+/* ── Primary Buttons ── */
+.btn-primary,
+.ant-btn-primary,
+button.btn-primary {
+  background-color: #4BCD3E !important;
+  border-color: #3fb835 !important;
+  color: #0a2540 !important;
+  font-weight: 600 !important;
+}
+
+.btn-primary:hover,
+.ant-btn-primary:hover {
+  background-color: #3fb835 !important;
+  border-color: #36a42e !important;
+}
+
+/* ── Secondary/Default Buttons ── */
+.btn-default,
+.btn-secondary {
+  border-color: #00c1d5 !important;
+  color: #00c1d5 !important;
+}
+
+.btn-default:hover,
+.btn-secondary:hover {
+  background: rgba(0, 193, 213, 0.1) !important;
+}
+
+/* ── Links ── */
+a {
+  color: #00c1d5;
+}
+
+a:hover {
+  color: #4BCD3E;
+}
+
+/* ── Dashboard header ── */
+.dashboard-header,
+.header-with-actions {
+  border-bottom-color: rgba(75, 205, 62, 0.2) !important;
+}
+
+/* ── Chart controls ── */
+.slice_container .chart-header {
+  border-bottom: 2px solid rgba(75, 205, 62, 0.15) !important;
+}
+
+/* ── Filter bar ── */
+.filter-scope-pane .filter-field-pane,
+.dashboard-filter-indicators-container .filter-indicator {
+  border-color: #00c1d5 !important;
+}
+
+/* ── Tab active state ── */
+.ant-tabs-tab-active .ant-tabs-tab-btn,
+.nav-tabs > li.active > a {
+  color: #4BCD3E !important;
+  border-bottom-color: #4BCD3E !important;
+}
+
+.ant-tabs-ink-bar {
+  background: #4BCD3E !important;
+}
+
+/* ── Menu / Dropdown ── */
+.ant-dropdown-menu-item:hover,
+.ant-select-item-option-active {
+  background: rgba(75, 205, 62, 0.08) !important;
+}
+
+/* ── Loading indicators ── */
+.ant-spin-dot-item,
+.loading-spinner {
+  background-color: #4BCD3E !important;
+}
+
+/* ── Welcome page cards ── */
+.ant-card:hover {
+  border-color: rgba(75, 205, 62, 0.3) !important;
+}
+
+/* ── Explore page ── */
+.panel-title {
+  color: #00565b !important;
+}
+
+/* ── Color scheme override for charts ── */
+/* Superset uses ECharts — inject FIS colors as the default palette */
+:root {
+  --superset-primary-color: #4BCD3E;
+}

@@ -1,0 +1,121 @@
+<div class="nl-page">
+  <!-- Header -->
+  <div class="nl-header">
+    <div class="nl-header-content">
+      <div class="nl-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="nl-title">Ask a Question</h1>
+        <p class="nl-subtitle">Describe the chart you want in plain English — AI will build it in Superset</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Area -->
+  <div class="chat-area">
+    <!-- Empty state -->
+    <div *ngIf="messages.length === 0" class="chat-empty">
+      <div class="empty-hero">
+        <div class="hero-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="9" y1="21" x2="9" y2="9"></line>
+          </svg>
+        </div>
+        <p class="hero-text">Try asking something like...</p>
+      </div>
+      <div class="suggestion-grid">
+        <button
+          *ngFor="let s of suggestions"
+          class="suggestion-chip"
+          (click)="useSuggestion(s)">
+          {{ s }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" *ngIf="messages.length > 0">
+      <div
+        *ngFor="let msg of messages"
+        class="chat-msg"
+        [ngClass]="{ 'msg-user': msg.role === 'user', 'msg-assistant': msg.role === 'assistant' }">
+
+        <!-- User message -->
+        <div *ngIf="msg.role === 'user'" class="msg-bubble user-bubble">
+          {{ msg.text }}
+        </div>
+
+        <!-- Assistant message -->
+        <div *ngIf="msg.role === 'assistant'" class="msg-bubble assistant-bubble">
+          <div class="msg-text" [innerHTML]="msg.text"></div>
+
+          <!-- Intent summary -->
+          <div *ngIf="msg.intent && !msg.error" class="intent-summary">
+            <span class="intent-tag">{{ msg.intent.dataset }}</span>
+            <span class="intent-tag" *ngIf="msg.intent.groupByColumn">by {{ msg.intent.groupByColumn }}</span>
+            <span class="intent-tag">{{ msg.intent.metric }}</span>
+            <span class="intent-tag">{{ vizLabel(msg.intent.vizType) }}</span>
+            <span class="intent-tag" *ngIf="msg.intent.timeFilter">{{ msg.intent.timeFilter }}</span>
+          </div>
+
+          <!-- Loading indicator -->
+          <div *ngIf="msg.loading" class="chart-loading">
+            <div class="pulse-bar"></div>
+            <div class="pulse-bar short"></div>
+            <div class="pulse-bar shorter"></div>
+          </div>
+
+          <!-- Chart embed -->
+          <div *ngIf="msg.embedUrl && !msg.loading" class="chart-embed-wrapper">
+            <iframe
+              [src]="msg.embedUrl"
+              class="chart-iframe"
+              allowfullscreen>
+            </iframe>
+            <div class="chart-actions">
+              <button class="btn btn-sm btn-secondary" (click)="openInSuperset(msg.chart!)">
+                Open in Superset
+              </button>
+            </div>
+          </div>
+
+          <!-- Error state -->
+          <div *ngIf="msg.error" class="msg-error-detail">
+            Make sure Superset is running at <code>localhost:8088</code> and the dataset exists.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="chat-input-area">
+    <div class="input-wrapper">
+      <input
+        type="text"
+        class="chat-input"
+        [(ngModel)]="query"
+        (keydown)="onKeydown($event)"
+        placeholder="e.g. &quot;Show me payments by channel this month&quot;"
+        [disabled]="processing"
+        autofocus />
+      <button
+        class="send-btn"
+        (click)="submitQuery()"
+        [disabled]="!query.trim() || processing">
+        <svg *ngIf="!processing" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+        <div *ngIf="processing" class="send-spinner"></div>
+      </button>
+    </div>
+    <p class="input-hint">
+      Supports: payments &amp; statements datasets · pie, bar, line, area, table, KPI · time filters
+    </p>
+  </div>
+</div>

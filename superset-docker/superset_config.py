@@ -36,8 +36,18 @@ CACHE_CONFIG = {
 ENABLE_CORS = True
 CORS_OPTIONS = {
     "supports_credentials": True,
-    "allow_headers": ["*"],
-    "resources": [r"/api/*"],
+    "allow_headers": [
+        "Content-Type",
+        "Authorization",
+        "X-CSRFToken",
+        "X-GuestToken",
+        "Accept",
+        "Origin",
+        "Referer",
+    ],
+    "expose_headers": ["Content-Type", "X-CSRFToken"],
+    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    "resources": [r"/api/*", r"/superset/*"],
     "origins": [
         "http://localhost:4200",   # Angular default dev server
         "http://127.0.0.1:4200",
@@ -68,3 +78,37 @@ GUEST_ROLE_NAME = "Public"
 GUEST_TOKEN_JWT_SECRET = SECRET_KEY
 GUEST_TOKEN_JWT_ALGO = "HS256"
 GUEST_TOKEN_HEADER_NAME = "X-GuestToken"
+
+# ── FIS Global Custom Theme ─────────────────────────────────
+# Inject custom CSS to brand Superset with FIS colours
+_fis_css_path = os.path.join(os.path.dirname(__file__), "fis-superset-theme.css")
+try:
+    with open(_fis_css_path, "r") as _f:
+        EXTRA_SEQUENTIAL_CSS = _f.read()
+except FileNotFoundError:
+    EXTRA_SEQUENTIAL_CSS = ""
+
+# FIS-branded colour scheme for ECharts-based visualisations
+EXTRA_CATEGORICAL_COLOR_SCHEMES = [
+    {
+        "id": "fisGlobal",
+        "description": "FIS Global brand colours",
+        "label": "FIS Global",
+        "isDefault": True,
+        "colors": [
+            "#4BCD3E",  # FIS Green
+            "#00c1d5",  # FIS Cyan
+            "#00565b",  # FIS Dark Teal
+            "#8dc63f",  # FIS Light Green
+            "#0a2540",  # FIS Navy
+            "#3fb835",  # FIS Green Hover
+            "#006d75",  # Teal mid
+            "#7ec8e3",  # Sky blue
+            "#2ecc71",  # Emerald
+            "#1abc9c",  # Turquoise
+        ],
+    }
+]
+
+# Cross-filter for interactive dashboards
+FEATURE_FLAGS["DASHBOARD_CROSS_FILTERS"] = True

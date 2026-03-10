@@ -1,20 +1,29 @@
-/* ===== CSS Variables ===== */
+/* ===== FIS Global Branded CSS Variables ===== */
 :root {
-  --primary: #1a2a4a;
-  --primary-light: #243b6e;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
-  --success: #10b981;
+  /* FIS brand palette */
+  --fis-green: #4BCD3E;
+  --fis-green-hover: #3fb835;
+  --fis-dark-teal: #00565b;
+  --fis-cyan: #00c1d5;
+  --fis-navy: #0a2540;
+  --fis-light-green: #8dc63f;
+
+  /* Theme mapping — FIS branded */
+  --primary: #0a2540;
+  --primary-light: #0d3050;
+  --accent: #4BCD3E;
+  --accent-hover: #3fb835;
+  --success: #4BCD3E;
   --warning: #f59e0b;
   --danger: #ef4444;
-  --info: #06b6d4;
+  --info: #00c1d5;
   --secondary: #6b7280;
-  --bg: #0f172a;
-  --surface: #1e293b;
-  --surface-hover: #293548;
-  --border: #334155;
-  --text: #e2e8f0;
-  --text-muted: #94a3b8;
+  --bg: #071a2e;
+  --surface: #0d2847;
+  --surface-hover: #133158;
+  --border: #1a3d6b;
+  --text: #e8edf4;
+  --text-muted: #8da4c2;
   --sidebar-width: 240px;
   --header-height: 64px;
 }
@@ -54,7 +63,7 @@ a:hover { color: var(--accent-hover); }
   &-danger { background: var(--danger); color: #fff; &:hover:not(:disabled) { background: #dc2626; } }
   &-refresh { background: transparent; border: 1px solid var(--border); color: var(--text-muted); &:hover { background: var(--surface-hover); color: var(--text); } }
   &-back { background: transparent; color: var(--text-muted); border: none; padding: 6px 0; &:hover { color: var(--text); } }
-  &-superset { background: linear-gradient(135deg, #e83e32, #c0392b); color: #fff; &:hover:not(:disabled) { background: linear-gradient(135deg, #c0392b, #a93226); } }
+  &-superset { background: linear-gradient(135deg, #00c1d5, #00565b); color: #fff; &:hover:not(:disabled) { background: linear-gradient(135deg, #00a8ba, #004a4e); } }
   &-lg { padding: 12px 24px; font-size: 14px; }
   &-sm { padding: 5px 10px; font-size: 12px; }
 }
@@ -71,7 +80,7 @@ a:hover { color: var(--accent-hover); }
   transition: border-color 0.2s;
   outline: none;
 
-  &:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+  &:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(75,205,62,0.15); }
   &::placeholder { color: var(--text-muted); }
   &.is-invalid { border-color: var(--danger); }
 }
@@ -166,7 +175,7 @@ a:hover { color: var(--accent-hover); }
   text-transform: uppercase;
   letter-spacing: 0.04em;
 
-  &-success { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+  &-success { background: rgba(75,205,62,0.15); color: #4BCD3E; border: 1px solid rgba(75,205,62,0.3); }
   &-warning { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
   &-danger { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
   &-info { background: rgba(6,182,212,0.15); color: #06b6d4; border: 1px solid rgba(6,182,212,0.3); }
@@ -175,9 +184,9 @@ a:hover { color: var(--accent-hover); }
 
 .type-pill {
   display: inline-block;
-  background: rgba(59,130,246,0.1);
+  background: rgba(75,205,62,0.1);
   color: var(--accent);
-  border: 1px solid rgba(59,130,246,0.2);
+  border: 1px solid rgba(75,205,62,0.2);
   padding: 2px 8px;
   border-radius: 4px;
   font-size: 11px;

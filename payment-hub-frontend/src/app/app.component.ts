@@ -33,6 +33,7 @@ export class AppComponent implements OnDestroy {
         { label: 'Dashboard Builder', icon: '🛠️', path: '/dashboard-builder' },
         { label: 'My Dashboards', icon: '📈', path: '/dashboards' },
         { label: 'Superset Analytics', icon: '🔍', path: '/analytics/superset' },
+        { label: 'Ask a Question', icon: '💬', path: '/analytics/ask' },
       ]
     }
   ];
@@ -65,6 +66,7 @@ export class AppComponent implements OnDestroy {
       { path: '/dashboards', label: 'My Dashboards' },
       { path: '/superset-embed', label: 'Embedded Dashboard' },
       { path: '/analytics/superset', label: 'Superset Analytics' },
+      { path: '/analytics/ask', label: 'Ask a Question' },
     ];
     // Check more specific routes first
     const sorted = allItems.sort((a, b) => b.path.length - a.path.length);

@@ -4,12 +4,12 @@
   overflow: hidden;
 }
 
-/* ===== Sidebar ===== */
+/* ===== Sidebar — FIS Branded ===== */
 .sidebar {
   width: var(--sidebar-width);
   min-width: var(--sidebar-width);
-  background: var(--primary);
-  border-right: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--fis-navy, #0a2540) 0%, var(--fis-dark-teal, #00565b) 100%);
+  border-right: 1px solid rgba(75, 205, 62, 0.1);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -21,17 +21,17 @@
   align-items: center;
   gap: 10px;
   padding: 20px 20px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(75, 205, 62, 0.15);
 
   .brand-logo {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, var(--accent), #6366f1);
-    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    background: rgba(75, 205, 62, 0.12);
+    border: 1px solid rgba(75, 205, 62, 0.25);
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
     flex-shrink: 0;
   }
   .brand-text {
@@ -43,7 +43,9 @@
     }
     .brand-sub {
       font-size: 11px;
-      color: rgba(255,255,255,0.45);
+      color: var(--fis-green, #4BCD3E);
+      font-weight: 500;
+      opacity: 0.8;
     }
   }
 }
@@ -62,7 +64,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.35);
+  color: rgba(75, 205, 62, 0.45);
   padding: 8px 20px 4px;
 }
 
@@ -82,21 +84,21 @@
   .nav-icon { font-size: 16px; width: 20px; text-align: center; }
 
   &:hover {
-    background: rgba(255,255,255,0.07);
+    background: rgba(75, 205, 62, 0.08);
     color: #fff;
   }
 
   &.active {
-    background: rgba(59,130,246,0.15);
-    color: var(--accent);
-    border-left-color: var(--accent);
+    background: rgba(75, 205, 62, 0.12);
+    color: var(--fis-green, #4BCD3E);
+    border-left-color: var(--fis-green, #4BCD3E);
     font-weight: 600;
   }
 }
 
 .sidebar-footer {
   padding: 16px 20px;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(75, 205, 62, 0.15);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -105,8 +107,9 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--success);
+    background: var(--fis-green, #4BCD3E);
     flex-shrink: 0;
+    box-shadow: 0 0 6px rgba(75, 205, 62, 0.5);
   }
   span {
     font-size: 12px;
@@ -148,22 +151,34 @@
   .top-bar-right {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
+
+    .fis-badge {
+      display: inline-flex;
+      align-items: center;
+      background: linear-gradient(135deg, #4BCD3E, #3fb835);
+      color: #0a2540;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
 
     .superset-link {
       display: flex;
       align-items: center;
       gap: 6px;
-      background: rgba(232,62,50,0.1);
-      border: 1px solid rgba(232,62,50,0.3);
-      color: #e83e32;
+      background: rgba(0, 193, 213, 0.08);
+      border: 1px solid rgba(0, 193, 213, 0.25);
+      color: var(--fis-cyan, #00c1d5);
       padding: 6px 12px;
       border-radius: 6px;
       font-size: 12px;
       font-weight: 600;
       text-decoration: none;
       transition: all 0.2s;
-      &:hover { background: rgba(232,62,50,0.2); }
+      &:hover { background: rgba(0, 193, 213, 0.15); }
     }
   }
 }

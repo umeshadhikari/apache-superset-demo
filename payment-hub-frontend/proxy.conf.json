@@ -1,0 +1,9 @@
+{
+  "/superset-api": {
+    "target": "http://localhost:8088",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": { "^/superset-api": "" },
+    "logLevel": "debug"
+  }
+}

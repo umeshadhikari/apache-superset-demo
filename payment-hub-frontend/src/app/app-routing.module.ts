@@ -10,6 +10,7 @@ import { DashboardBuilderComponent } from './components/dashboard-builder/dashbo
 import { DashboardListComponent } from './components/dashboard-list/dashboard-list.component';
 import { SupersetEmbedComponent } from './components/superset-embed/superset-embed.component';
 import { SupersetExplorerComponent } from './components/superset-explorer/superset-explorer.component';
+import { NlChartBuilderComponent } from './components/nl-chart-builder/nl-chart-builder.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'dashboards', component: DashboardListComponent },
   { path: 'superset-embed/:dashboardId', component: SupersetEmbedComponent },
   { path: 'analytics/superset', component: SupersetExplorerComponent },
+  { path: 'analytics/ask', component: NlChartBuilderComponent },
   { path: '**', redirectTo: '' }
 ];
 

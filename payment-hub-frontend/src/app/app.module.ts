@@ -15,6 +15,7 @@ import { DashboardBuilderComponent } from './components/dashboard-builder/dashbo
 import { DashboardListComponent } from './components/dashboard-list/dashboard-list.component';
 import { SupersetEmbedComponent } from './components/superset-embed/superset-embed.component';
 import { SupersetExplorerComponent } from './components/superset-explorer/superset-explorer.component';
+import { NlChartBuilderComponent } from './components/nl-chart-builder/nl-chart-builder.component';
 import { SupersetErrorHandler } from './superset-error-handler';
 
 @NgModule({
@@ -29,7 +30,8 @@ import { SupersetErrorHandler } from './superset-error-handler';
     DashboardBuilderComponent,
     DashboardListComponent,
     SupersetEmbedComponent,
-    SupersetExplorerComponent
+    SupersetExplorerComponent,
+    NlChartBuilderComponent
   ],
   imports: [
     BrowserModule,

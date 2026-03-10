@@ -2,10 +2,17 @@
   <!-- Sidebar -->
   <nav class="sidebar">
     <div class="sidebar-brand">
-      <div class="brand-logo">💳</div>
+      <div class="brand-logo">
+        <svg viewBox="0 0 40 40" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10" cy="8" r="3" fill="#4BCD3E"/>
+          <circle cx="20" cy="8" r="3" fill="#4BCD3E"/>
+          <circle cx="30" cy="8" r="3" fill="#4BCD3E"/>
+          <text x="3" y="30" font-family="Arial,sans-serif" font-weight="800" font-size="16" fill="#fff">FIS</text>
+        </svg>
+      </div>
       <div class="brand-text">
         <div class="brand-name">Payment Hub</div>
-        <div class="brand-sub">Demo Platform</div>
+        <div class="brand-sub">Powered by FIS</div>
       </div>
     </div>
 
@@ -46,8 +53,9 @@
         <span class="top-bar-title">{{ getPageTitle() }}</span>
       </div>
       <div class="top-bar-right">
+        <span class="fis-badge">FIS</span>
         <a href="http://localhost:8088" target="_blank" class="superset-link">
-          🔴 Apache Superset
+          Apache Superset
         </a>
       </div>
     </header>
